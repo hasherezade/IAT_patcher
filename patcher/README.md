@@ -1,4 +1,3 @@
-IAThooker
+IAT patcher
 ============
-
-Hooker for Portable Executable Imports
+Main application source.
