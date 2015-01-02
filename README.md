@@ -11,10 +11,8 @@ Requires:
 + cmake http://www.cmake.org/<br/>
 
 <b>Before build - download bearparser source into bearparser directory</b><br/>
-From main directory:<br/>
-<pre>
-git clone https://github.com/hasherezade/bearparser.git
-</pre>
+From main directory:
+<pre>git clone https://github.com/hasherezade/bearparser.git</pre>
 
 How to fetch complete source:
 ===
@@ -31,7 +29,7 @@ cmake -G [enviroment of your choice] ../IAT_patcher/
 i. e
 cmake -G "CodeBlocks - Unix Makefiles" ../IAT_patcher/
 make
-<pre>
+</pre>
 Read more:
 ===
 http://hasherezade.net/IAT_patcher/
