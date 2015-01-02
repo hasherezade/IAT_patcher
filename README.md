@@ -25,7 +25,14 @@ git clone https://github.com/hasherezade/bearparser.git
 
 How to build (Linux example):
 ===
+If you are in directory IAT_patcher, go up:
 <pre>
+cd ../
+</pre>
+and then:
+<pre>
+mkdir build
+cd build
 cmake -G [enviroment of your choice] ../IAT_patcher/
 i. e
 cmake -G "CodeBlocks - Unix Makefiles" ../IAT_patcher/
