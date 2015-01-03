@@ -38,6 +38,10 @@ i. e
 cmake -G "CodeBlocks - Unix Makefiles" ../IAT_patcher/
 make
 </pre>
+...the application is here:
+<pre>
+../build/patcher/IAT_Patcher
+</pre>
 Read more:
 ===
 http://hasherezade.net/IAT_patcher/
