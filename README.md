@@ -1,6 +1,9 @@
-IAT patcher
+IAT patcher 
 ==========
 Persistent IAT hooking application.<br/>
+<b>
+Site: http://hasherezade.net/IAT_patcher
+</b>
 
 WARNING: this is an early beta version, some elements are unfinished!<br/>
 Please report any bugs and remarks to: hasherezade@op.pl<br/>
@@ -42,6 +45,4 @@ make
 <pre>
 ../build/patcher/IAT_Patcher
 </pre>
-Read more:
-===
-http://hasherezade.net/IAT_patcher/
+
