@@ -21,6 +21,11 @@ offset_t Stub32::getSignatureEnd() const
     return Stub32Data::pointers[3];
 }
 
+offset_t Stub32::getDatastoreOffset() const
+{
+    return Stub32Data::pointers[DATA_RVA];
+}
+
 void Stub32::createParams()
 {
     this->m_params[NEW_EP] = new StubParam(NEW_EP, Stub32Data::pointers[0], 1, sizeof(DWORD));

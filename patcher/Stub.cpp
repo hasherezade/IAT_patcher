@@ -12,6 +12,18 @@ bool StubParam::insertIntoBuffer(ByteBuffer* buf)
     return true;
 }
 
+bool StubParam::readFromBuffer(AbstractByteBuffer* buf)
+{
+    if (buf == NULL) return false;
+
+    offset_t fullOffset = this->m_bigOffset + this->m_smallOffset;
+        BYTE *toRead = buf->getContentAt(fullOffset, this->m_valueSize);
+    if (toRead == NULL) return false;
+
+    this->m_value = 0;
+    memcpy(&m_value, toRead, m_valueSize); //TODO: use abstraction...
+    return true;
+}
 //-----
 
 ByteBuffer* Stub::createStubBuffer()
@@ -53,12 +65,62 @@ bool Stub::fillParam(size_t id, ByteBuffer* buf)
     return param->insertIntoBuffer(buf);
 }
 
+
 bool Stub::fillParams(ByteBuffer* buf)
 {
     std::map<size_t, StubParam*>::iterator itr;
     for (itr = m_params.begin(); itr != m_params.end(); itr++) {
         size_t paramId = itr->first;
         if (fillParam(paramId, buf) == false) {
+            return false;
+        }
+    }
+    return true;
+}
+
+offset_t Stub::getAbsoluteValue(StubParam *param)
+{
+    if (param == NULL) {
+        return INVALID_ADDR;
+    }
+
+    offset_t myValue = param->m_value;
+
+    if (param->m_relativeToId != param->m_id) {
+        StubParam *relParam = this->getParam(param->m_relativeToId);
+        if (relParam == NULL) return INVALID_ADDR;
+
+        offset_t dif = ((int32_t) param->m_value);
+        offset_t relValue = relParam->m_value;
+
+        myValue = relParam->m_value + dif + param->getTotalOffset() + param->getValueSize();
+    }
+    return myValue;
+}
+
+bool Stub::readParam(size_t id, AbstractByteBuffer* buf)
+{
+    StubParam *param = this->getParam(id);
+    if (param == NULL) {
+        printf("Param: %d not found!\n", id);
+        return false;
+    }
+    if (param->readFromBuffer(buf) == false) return false;
+
+    offset_t myValue = getAbsoluteValue(param);
+    if (myValue == INVALID_ADDR) return false;
+
+    param->setValue(myValue);
+    return true;
+}
+
+
+bool Stub::readParams(AbstractByteBuffer* buf)
+{
+    std::map<size_t, StubParam*>::iterator itr;
+    for (itr = m_params.begin(); itr != m_params.end(); itr++) {
+        size_t paramId = itr->first;
+        if (!readParam(paramId, buf)) {
             return false;
         }
     }

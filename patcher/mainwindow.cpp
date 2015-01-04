@@ -262,7 +262,7 @@ void MainWindow::functionsMenuRequested(QPoint pos)
 
     FuncDesc replName = this->m_ExeSelected->getReplAt(m_ThunkSelected);
     //todo: on show?
-    QString libName; 
+    QString libName;
     QString funcName;
     FuncUtil::parseFuncDesc(replName, libName, funcName);
 
@@ -364,7 +364,7 @@ void MainWindow::onFileLoaded(AbstractByteBuffer* buf)
         Executable *exe = ExeFactory::build(buf, exeType);
         ExeHandler *exeHndl = new ExeHandler(buf, exe);
         if (exeHndl == NULL) throw CustomException("Cannot create handle!");
-        exeHndl->setHookedState(StubMaker::isHooked(exeHndl));
+        StubMaker::fillHookedInfo(exeHndl);
         m_exes.addExe(exeHndl);
 
     } catch (CustomException &e) {

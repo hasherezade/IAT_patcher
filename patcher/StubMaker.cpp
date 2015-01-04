@@ -19,6 +19,44 @@ size_t StubMaker::countMissingImports(FunctionsMap &funcMap)
     return count;
 }
 
+bool StubMaker::fillHookedInfo(ExeHandler *exeHndl)
+{
+    if (exeHndl == NULL) return false;
+
+    PEFile *pe = static_cast<PEFile*> (exeHndl->getExe());
+    if (pe == NULL) return false;
+
+    offset_t ep = pe->getEntryPoint();
+    offset_t epRaw = pe->convertAddr(ep, Executable::RVA, Executable::RAW);
+    if (epRaw == INVALID_ADDR) return false;
+
+    BufferView epView(pe, epRaw, pe->getContentSize() - epRaw);
+
+    Stub *stub = NULL;
+    if (pe->isBit32()) {
+        stub = new Stub32();
+    } else {
+        stub = new Stub64();
+    }
+
+    bool isContained = stub->containsStub(&epView);
+    exeHndl->setHookedState(isContained);
+
+    if (isContained) {
+        if (stub->readParams(&epView)) {
+            //TODO: fill all the params in exeHndl
+            /*size_t pCnt = stub->getParamsCount();
+            for (size_t id = 0; id< pCnt; id++) {
+                printf("[%d] = %llx\n", id, stub->getParamValue(id));
+            }*/
+            exeHndl->originalEP = stub->getParamValue(Stub::OEP);
+            //printf("Params OK, OEP = %llx\n", exeHndl->originalEP);
+        }
+    }
+    delete stub;
+    return isContained;
+}
+
 bool StubMaker::isHooked(PEFile *pe)
 {
     if (pe == NULL) return false;
@@ -26,7 +64,7 @@ bool StubMaker::isHooked(PEFile *pe)
     offset_t ep = pe->getEntryPoint();
     offset_t epRaw = pe->convertAddr(ep, Executable::RVA, Executable::RAW);
     if (epRaw == INVALID_ADDR) return false;
-    
+
     BufferView epView(pe, epRaw, pe->getContentSize() - epRaw);
 
     Stub *stub = NULL;
@@ -36,6 +74,16 @@ bool StubMaker::isHooked(PEFile *pe)
         stub = new Stub64();
     }
     bool isContained = stub->containsStub(&epView);
+    if (isContained) {
+        if (stub->readParams(&epView)) {
+            size_t pCnt = stub->getParamsCount();
+            for (size_t id = 0; id< pCnt; id++) {
+                printf("[%d] = %llx\n", id, stub->getParamValue(id));
+            }
+            printf("Params OK!\n");
+        }
+    }
+
     delete stub;
     return isContained;
 }

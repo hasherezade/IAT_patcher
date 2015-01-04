@@ -18,8 +18,8 @@ void ExeController::onHookRequested(ExeHandler* exeHndl, StubSettings &settings)
     }
     if (exeHndl->getHookedState()) {
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(NULL, "Already hooked!", 
-            "This file is already hooked.\nDo you really want to double hook it?", 
+        reply = QMessageBox::question(NULL, "Already hooked!",
+            "This file is already hooked.\nDo you really want to double hook it?",
             QMessageBox::Yes|QMessageBox::No
             );
 
@@ -35,8 +35,8 @@ void ExeController::onHookRequested(ExeHandler* exeHndl, StubSettings &settings)
     */
     if (exeHndl->hasReplacements() == false) {
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(NULL, "No replacements!", 
-            "You haven't defined any replacement functions.\nDo you really want to add an empty stub?", 
+        reply = QMessageBox::question(NULL, "No replacements!",
+            "You haven't defined any replacement functions.\nDo you really want to add an empty stub?",
             QMessageBox::Yes|QMessageBox::No
             );
 
@@ -48,7 +48,7 @@ void ExeController::onHookRequested(ExeHandler* exeHndl, StubSettings &settings)
     /*StubSettings settings;
     settings.setAddNewSection(this->m_ui.actionAdd_new_section->isChecked());
     settings.setReuseImports(this->m_ui.actionAdd_imports->isChecked());
-    
+
     QString settingsStr = "Settings: ";
     if (settings.getAddNewSection()) {
         settingsStr += "add new section ;";
@@ -64,7 +64,7 @@ void ExeController::onHookRequested(ExeHandler* exeHndl, StubSettings &settings)
     try {
         bool isSuccess = StubMaker::makeStub(exeHndl, settings);
         //update view even if hooking partialy failed...
-        exeHndl->setHookedState(StubMaker::isHooked(exeHndl));
+        StubMaker::fillHookedInfo(exeHndl);
         emit exeUpdated(exeHndl);
 
         if (isSuccess) {
@@ -92,8 +92,8 @@ void ExeController::onSaveRequested(ExeHandler* exeHndl)
         //QMessageBox::warning(NULL, "Nothing to save!", "Hook the file first!");
 
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(NULL, "Unhooked file!", 
-            "You are trying to save unhooked file. Do you really want?", 
+        reply = QMessageBox::question(NULL, "Unhooked file!",
+            "You are trying to save unhooked file. Do you really want?",
             QMessageBox::Yes|QMessageBox::No
             );
 

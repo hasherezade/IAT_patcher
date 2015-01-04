@@ -41,12 +41,7 @@ public:
         return countMissingImports(exeHndl->m_FuncMap);
     }
 
-    static bool isHooked(ExeHandler *exeHndl)
-    {
-        if (exeHndl == NULL) return false;
-        PEFile *pe = static_cast<PEFile*> (exeHndl->getExe());
-        return isHooked(pe);
-    }
+    static bool fillHookedInfo(ExeHandler *exeHndl);
 
 protected:
     static Stub* makeStub(PEFile *pe);

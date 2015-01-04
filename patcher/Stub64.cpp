@@ -21,6 +21,12 @@ offset_t Stub64::getSignatureEnd() const
     return Stub64Data::pointers[3];
 }
 
+offset_t Stub64::getDatastoreOffset() const
+{
+    return Stub64Data::pointers[DATA_RVA];
+}
+
+
 void Stub64::createParams()
 {
     this->m_params[NEW_EP] = new StubParam(NEW_EP, Stub64Data::pointers[0], 3, sizeof(DWORD));

@@ -62,7 +62,7 @@ QVariant InfoTableModel::data(const QModelIndex &index, int role) const
 	if (exeHndl == NULL) return QVariant();
     Executable *exe = exeHndl->getExe();
     if (exe == NULL) return QVariant();
-    
+
     if (role == Qt::DisplayRole) {
         return getDisplayData(role, attribute, exeHndl);
     }
@@ -71,7 +71,7 @@ QVariant InfoTableModel::data(const QModelIndex &index, int role) const
         if (exeHndl->hasReplacements()) return QColor(HIGLIHHT_COLOR);
         return QVariant();
     }
-    
+
     if (role == Qt::DecorationRole && attribute == COL_NAME) {
         if (exe->isBit32()) return QIcon(":/icons/app32.ico");
         if (exe->isBit64()) return QIcon(":/icons/app64.ico");
@@ -106,13 +106,18 @@ QVariant InfoTableModel::data(const QModelIndex &index, int role) const
             if (StubMaker::countMissingImports(exeHndl) > 0) return "Needs to add imports";
             return "Can reuse all imports";
         }
-        return "";
+        QString epInfo = "OEP\t= "+ QString::number( exeHndl->getOriginalEP(), 16 );
+
+        if (exeHndl->getHookedState()) {
+            epInfo += "\nEP \t= "+ QString::number( exeHndl->getCurrentEP(), 16 );
+        }
+        return epInfo;
     }
     return QVariant();
 }
 
 QVariant InfoTableModel::getDisplayData(int role, int attribute, ExeHandler *exeHndl) const
-{   
+{
     Executable *exe = exeHndl->getExe();
     if (exe == NULL) return QVariant();
 

@@ -8,10 +8,10 @@
 class StubParam
 {
 public:
-    StubParam(size_t id, offset_t bigOffset, offset_t smallOffset, size_t valueSize, size_t relId) 
+    StubParam(size_t id, offset_t bigOffset, offset_t smallOffset, size_t valueSize, size_t relId)
         : m_id(id), m_bigOffset(bigOffset), m_smallOffset(smallOffset), m_valueSize(valueSize), m_value(0), m_relativeToId(relId) {}
 
-    StubParam(size_t id, offset_t bigOffset, offset_t smallOffset, size_t valueSize) 
+    StubParam(size_t id, offset_t bigOffset, offset_t smallOffset, size_t valueSize)
         : m_id(id), m_bigOffset(bigOffset), m_smallOffset(smallOffset), m_valueSize(valueSize), m_value(0), m_relativeToId(id) {}
 
     virtual ~StubParam() { /*printf("Deleting param id = %d\n", m_id);*/ }
@@ -20,6 +20,8 @@ public:
     offset_t getValue() { return m_value; }
 
     bool insertIntoBuffer(ByteBuffer* buf);
+    bool readFromBuffer(AbstractByteBuffer* buf);
+
     offset_t getTotalOffset() { return m_bigOffset + m_smallOffset; }
     offset_t getBigOffset() { return m_bigOffset; }
     size_t getValueSize() { return m_valueSize; }
@@ -42,11 +44,11 @@ public:
     enum STUB_PARAMS {
         NEW_EP, //LABEL_newEP
         DATA_RVA, //LABEL_dataRVA
-        OEP, //LABEL_oldEP 
+        OEP, //LABEL_oldEP
         FUNC_GET_MODULE_RVA,
         FUNC_LOAD_LIB_RVA
     };
-    
+
     Stub() { }
     virtual ~Stub() { deleteParams(); }
 
@@ -55,9 +57,24 @@ public:
 
     virtual offset_t getSignatureStart() const = 0;
     virtual offset_t getSignatureEnd() const = 0;
+    virtual offset_t getDatastoreOffset() const = 0;
 
     ByteBuffer* createStubBuffer();
     bool containsStub(AbstractByteBuffer *buf) const;
+
+    size_t getParamsCount()
+    {
+        return m_params.size();
+    }
+
+    offset_t getParamValue(size_t id)
+    {
+        if (this->m_params.find(id) == m_params.end()) {
+            printf("No param with ID = %d\n", id);
+            return INVALID_ADDR;
+        }
+        return this->m_params[id]->getValue();
+    }
 
     bool setParam(size_t id, offset_t value) {
         if (this->m_params.find(id) == m_params.end()) {
@@ -67,6 +84,8 @@ public:
         this->m_params[id]->setValue(value);
         return true;
     }
+
+   virtual bool readParams(AbstractByteBuffer* buf);
 
 protected:
 
@@ -91,8 +110,12 @@ protected:
         return dif;
     }
 
+    offset_t getAbsoluteValue(StubParam *param); // autocalculate relative
+
     virtual bool fillParam(size_t id, ByteBuffer* buf);
     virtual bool fillParams(ByteBuffer* buf);
+
+    virtual bool readParam(size_t id, AbstractByteBuffer* buf);
 
     ByteBuffer* bufferStubData();
 
