@@ -51,12 +51,13 @@ protected:
     static size_t calcNewImportsSize(PEFile *pe, size_t addedFuncCount);
 
     static ByteBuffer* makeDataStore(const offset_t dataRva, FuncReplacements &funcRepl);
+    static bool readDataStore(AbstractByteBuffer* storeBuf, const offset_t dataRva, FuncReplacements &out_funcRepl);
+
     static ByteBuffer* createStub32(PEFile *peFile, offset_t stubRva, offset_t loadLib, offset_t getProcAddr);
 
     static size_t countMissingImports(FunctionsMap &funcMap);
     static bool makeThunksWriteable(PEFile *pe);
 
-    static bool isHooked(PEFile *pe);
     static bool makeStub(PEFile *pe, FunctionsMap &funcMap, FuncReplacements &funcRepl, const StubSettings &settings);
     static bool addMissingFunctions(PEFile *pe, FunctionsMap &funcMap, bool tryReuse);
 

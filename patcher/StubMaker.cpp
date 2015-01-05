@@ -50,40 +50,14 @@ bool StubMaker::fillHookedInfo(ExeHandler *exeHndl)
                 printf("[%d] = %llx\n", id, stub->getParamValue(id));
             }*/
             exeHndl->originalEP = stub->getParamValue(Stub::OEP);
-            //printf("Params OK, OEP = %llx\n", exeHndl->originalEP);
+            offset_t dataRva = stub->getParamValue(Stub::DATA_RVA);
+            offset_t dataRaw = pe->toRaw(dataRva, Executable::RVA);
+            BufferView* dataBuf = new BufferView(pe, dataRaw, pe->getContentSize() - dataRaw);
+            printf("Reading dataStore at = %llx -> %llx\n", dataRva, dataRaw);
+            readDataStore(dataBuf, dataRva, exeHndl->m_Repl);
+            printf("Params OK, OEP = %llx\n", exeHndl->originalEP);
         }
     }
-    delete stub;
-    return isContained;
-}
-
-bool StubMaker::isHooked(PEFile *pe)
-{
-    if (pe == NULL) return false;
-
-    offset_t ep = pe->getEntryPoint();
-    offset_t epRaw = pe->convertAddr(ep, Executable::RVA, Executable::RAW);
-    if (epRaw == INVALID_ADDR) return false;
-
-    BufferView epView(pe, epRaw, pe->getContentSize() - epRaw);
-
-    Stub *stub = NULL;
-    if (pe->isBit32()) {
-        stub = new Stub32();
-    } else {
-        stub = new Stub64();
-    }
-    bool isContained = stub->containsStub(&epView);
-    if (isContained) {
-        if (stub->readParams(&epView)) {
-            size_t pCnt = stub->getParamsCount();
-            for (size_t id = 0; id< pCnt; id++) {
-                printf("[%d] = %llx\n", id, stub->getParamValue(id));
-            }
-            printf("Params OK!\n");
-        }
-    }
-
     delete stub;
     return isContained;
 }
@@ -137,9 +111,6 @@ ByteBuffer* StubMaker::makeDataStore(const offset_t dataRva, FuncReplacements &f
     const size_t TOTAL_SPACE = OFFSETS_SPACE + NAMES_SPACE;
     char *buffer = new char[TOTAL_SPACE];
 
-    printf("TOTAL_SPACE = %ld\n", TOTAL_SPACE);
-    printf("OFFSETS_SPACE = %ld\n", OFFSETS_SPACE);
-
     memset(buffer, 0, TOTAL_SPACE);
     size_t DELTA1 = OFFSETS_SPACE;
 
@@ -186,6 +157,45 @@ ByteBuffer* StubMaker::makeDataStore(const offset_t dataRva, FuncReplacements &f
     ByteBuffer *dataBuf = new ByteBuffer((BYTE*) buffer, TOTAL_SPACE, 0);
     delete []buffer;
     return dataBuf;
+}
+
+bool StubMaker::readDataStore(AbstractByteBuffer* buf, const offset_t dataRva, FuncReplacements &funcRepl)
+{
+    const offset_t start = dataRva;
+    const size_t unitSize = sizeof(DWORD);
+
+    offset_t valOffset = 0;
+    offset_t value = 0;
+
+    bool isOk = true;
+
+    for (valOffset = 0; isOk ;) {
+        value = buf->getNumValue(valOffset, unitSize, &isOk);
+        valOffset += unitSize;
+
+        if (!isOk || value == 0) break;
+        offset_t dllNameOffset = value - start;
+        QString dllName = buf->getStringValue(dllNameOffset);
+
+        while (isOk) {
+            value = buf->getNumValue(valOffset, unitSize, &isOk);
+            valOffset += unitSize;
+            offset_t funcNameOffset = value - start;
+            if (!isOk || value == 0) break; //end of DLL processing
+
+            value = buf->getNumValue(valOffset, unitSize, &isOk);
+            valOffset += unitSize;
+            if (!isOk || value == 0) break; //end of DLL processing
+            offset_t thunk = value;
+
+            QString funcName = buf->getStringValue(funcNameOffset);
+            //TODO: refactor it...
+            FuncDesc desc = dllName + "." + funcName;
+            funcRepl.hook(thunk, desc);
+        }
+
+    }
+    return isOk;
 }
 
 bool StubMaker::addFunction(PEFile *pe, ImportEntryWrapper* libWr, ImportedFuncWrapper* func, const QString& name, offset_t &storageOffset)
