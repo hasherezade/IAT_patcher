@@ -7,19 +7,20 @@
 void ExeController::onHookRequested(ExeHandler* exeHndl, StubSettings &settings)
 {
     if (exeHndl == NULL) return;
-
+    
     Executable *exe = exeHndl->getExe();
     if (exe == NULL) return;
 
+    bool isHooked = exeHndl->getHookedState();
     PEFile *pe = dynamic_cast<PEFile*>(exe);
     if (pe == NULL) {
         QMessageBox::warning(NULL, "Cannot hook!", "It is not a PE File!");
         return;
     }
-    if (exeHndl->getHookedState()) {
+    if (isHooked) {
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(NULL, "Already hooked!",
-            "This file is already hooked.\nDo you really want to double hook it?",
+            "This file is already hooked.\nDo you want to modify the existing stub?",
             QMessageBox::Yes|QMessageBox::No
             );
 
@@ -45,20 +46,7 @@ void ExeController::onHookRequested(ExeHandler* exeHndl, StubSettings &settings)
         }
     }
 
-    /*StubSettings settings;
-    settings.setAddNewSection(this->m_ui.actionAdd_new_section->isChecked());
-    settings.setReuseImports(this->m_ui.actionAdd_imports->isChecked());
-
-    QString settingsStr = "Settings: ";
-    if (settings.getAddNewSection()) {
-        settingsStr += "add new section ;";
-    }
-    if (settings.getReuseImports()) {
-        settingsStr += "reuse imports";
-    }
-    this->m_ui.statusBar->showMessage(settingsStr);
-    */
-    if (pe->canAddNewSection() == false && settings.getAddNewSection()) {
+    if (!isHooked && pe->canAddNewSection() == false && settings.getAddNewSection()) {
          QMessageBox::information(NULL,"Warning", "Cannot add new section in this file!\nProceed by extending last section...");
     }
     try {
