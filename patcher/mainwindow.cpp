@@ -292,6 +292,7 @@ void MainWindow::setReplacement()
     if (libName.length() != 0 && funcName.length() != 0) {
         substName = libName + "." + funcName;
     }
+    if (this->m_ExeSelected->m_Repl.getAt(m_ThunkSelected) == substName) return;
 
     if (this->m_ExeSelected->hook(m_ThunkSelected, substName) == false) {
         QMessageBox::warning(NULL, "Error", "Invalid replacement definition!");

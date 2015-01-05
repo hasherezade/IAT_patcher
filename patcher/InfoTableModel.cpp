@@ -68,7 +68,7 @@ QVariant InfoTableModel::data(const QModelIndex &index, int role) const
     }
 
     if (role == Qt::BackgroundColorRole) {
-        if (exeHndl->hasReplacements() && exeHndl->getHookedState() == false) {
+        if (exeHndl->getUnappliedState() == true) {
             return QColor(HIGLIHHT_COLOR);
         }
         return QVariant();
@@ -137,7 +137,11 @@ QVariant InfoTableModel::getDisplayData(int role, int attribute, ExeHandler *exe
         case COL_NAME :
         {
             QFileInfo inputInfo(exe->getFileName());
-            return inputInfo.fileName();
+            QString name = inputInfo.fileName();
+            if (exeHndl->getModifiedState() == true) {
+                name += "*";
+            }
+            return name;
         }
         case COL_RAW_SIZE : return  exe->getMappedSize(Executable::RAW);
         case COL_VIRTUAL_SIZE : return  exe->getMappedSize(Executable::RVA);

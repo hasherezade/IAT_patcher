@@ -7,7 +7,7 @@
 void ExeController::onHookRequested(ExeHandler* exeHndl, StubSettings &settings)
 {
     if (exeHndl == NULL) return;
-    
+
     Executable *exe = exeHndl->getExe();
     if (exe == NULL) return;
 
@@ -18,6 +18,10 @@ void ExeController::onHookRequested(ExeHandler* exeHndl, StubSettings &settings)
         return;
     }
     if (isHooked) {
+        if (exeHndl->getUnappliedState() == false) {
+            QMessageBox::information(NULL, "No changes!", "No changes to be applied");
+            return;
+        }
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(NULL, "Already hooked!",
             "This file is already hooked.\nDo you want to modify the existing stub?",

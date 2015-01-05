@@ -37,6 +37,10 @@ public:
         } else {
             isOk = makeStub(pe, exeHndl->m_FuncMap, exeHndl->m_Repl, settings);
         }
+        if (isOk) {
+            exeHndl->hasUnapplied = false;
+            exeHndl->isModified = true;
+        }
         exeHndl->rewrapFuncMap();
         return isOk;
     }
