@@ -1,14 +1,12 @@
 #include "Stub.h"
 
-bool StubParam::insertIntoBuffer(ByteBuffer* buf)
+bool StubParam::insertIntoBuffer(AbstractByteBuffer* buf)
 {
     if (buf == NULL) return false;
 
     offset_t fullOffset = this->m_bigOffset + this->m_smallOffset;
-    BYTE *toFill = buf->getContentAt(fullOffset, this->m_valueSize);
-    if (toFill == NULL) return false;
-
-    memcpy(toFill, &m_value, m_valueSize);
+    bool isOk = buf->setNumValue(fullOffset, this->m_valueSize, this->m_value);
+    //TODO - verify if setting succeseded?
     return true;
 }
 
@@ -17,11 +15,12 @@ bool StubParam::readFromBuffer(AbstractByteBuffer* buf)
     if (buf == NULL) return false;
 
     offset_t fullOffset = this->m_bigOffset + this->m_smallOffset;
-        BYTE *toRead = buf->getContentAt(fullOffset, this->m_valueSize);
-    if (toRead == NULL) return false;
+    bool isOk = false;
 
-    this->m_value = 0;
-    memcpy(&m_value, toRead, m_valueSize); //TODO: use abstraction...
+    offset_t value = buf->getNumValue(fullOffset, this->m_valueSize, &isOk);
+    if (!isOk) return false;
+
+    this->m_value = value;
     return true;
 }
 //-----
@@ -51,7 +50,7 @@ ByteBuffer* Stub::bufferStubData()
     return stubBuf;
 }
 
-bool Stub::fillParam(size_t id, ByteBuffer* buf)
+bool Stub::fillParam(size_t id, AbstractByteBuffer* buf)
 {
     StubParam *param = this->getParam(id);
     if (param == NULL) {
@@ -66,7 +65,7 @@ bool Stub::fillParam(size_t id, ByteBuffer* buf)
 }
 
 
-bool Stub::fillParams(ByteBuffer* buf)
+bool Stub::fillParams(AbstractByteBuffer* buf)
 {
     std::map<size_t, StubParam*>::iterator itr;
     for (itr = m_params.begin(); itr != m_params.end(); itr++) {

@@ -19,7 +19,7 @@ public:
     void setValue(offset_t value) { this->m_value = value; }
     offset_t getValue() { return m_value; }
 
-    bool insertIntoBuffer(ByteBuffer* buf);
+    bool insertIntoBuffer(AbstractByteBuffer* buf);
     bool readFromBuffer(AbstractByteBuffer* buf);
 
     offset_t getTotalOffset() { return m_bigOffset + m_smallOffset; }
@@ -112,8 +112,8 @@ protected:
 
     offset_t getAbsoluteValue(StubParam *param); // autocalculate relative
 
-    virtual bool fillParam(size_t id, ByteBuffer* buf);
-    virtual bool fillParams(ByteBuffer* buf);
+    virtual bool fillParam(size_t id, AbstractByteBuffer* buf);
+    virtual bool fillParams(AbstractByteBuffer* buf);
 
     virtual bool readParam(size_t id, AbstractByteBuffer* buf);
 
