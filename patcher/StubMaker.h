@@ -29,12 +29,14 @@ public:
     static bool makeStub(ExeHandler *exeHndl, const StubSettings &settings)
     {
         if (exeHndl == NULL) return false;
+        bool isOk = false;
         PEFile *pe = dynamic_cast<PEFile*>(exeHndl->getExe());
         if (exeHndl->isHooked) {
             printf("File already hooked. Overwriting DataStore...\n");
-            return overwriteDataStore(exeHndl);
+            isOk = overwriteDataStore(exeHndl);
+        } else {
+            isOk = makeStub(pe, exeHndl->m_FuncMap, exeHndl->m_Repl, settings);
         }
-        bool isOk = makeStub(pe, exeHndl->m_FuncMap, exeHndl->m_Repl, settings);
         exeHndl->rewrapFuncMap();
         return isOk;
     }

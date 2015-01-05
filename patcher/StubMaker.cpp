@@ -3,6 +3,8 @@
 #include "Stub32.h"
 #include "Stub64.h"
 
+const size_t SEC_PADDING = 10;
+
 size_t StubMaker::countMissingImports(FunctionsMap &funcMap)
 {
     QString libName = "Kernel32.dll";
@@ -204,23 +206,24 @@ bool StubMaker::readDataStore(AbstractByteBuffer* buf, const offset_t dataRva, F
 bool StubMaker::overwriteDataStore(ExeHandler *exeHndl)
 {
     if (exeHndl->isHooked == false) return false;
-    Executable *pe = exeHndl->getExe();
+    PEFile *pe = dynamic_cast<PEFile*>(exeHndl->getExe());
     if (!pe) return false;
 
     offset_t dataRva = exeHndl->dataStoreRva;
     offset_t dataRaw = pe->toRaw(dataRva, Executable::RVA);
     if (dataRaw == INVALID_ADDR || dataRaw == 0) return false;
 
-    BufferView dataBuf(pe, dataRaw, pe->getContentSize() - dataRaw);
-    bufsize_t currentSize = dataBuf.getContentSize();
+    bufsize_t currentSize = pe->getContentSize() - dataRaw;
     bufsize_t requiredSize = calcDataStoreSize(exeHndl->m_Repl);
 
     if (requiredSize > currentSize) {
         bufsize_t dif = requiredSize - currentSize;
         //TODO: perform resising...
         printf("Needs resising, dif = %lx\n", dif);
-        return false;
+        if (!pe->extendLastSection(dif + SEC_PADDING)) return false;
     }
+
+    BufferView dataBuf(pe, dataRaw, pe->getContentSize() - dataRaw);
     dataBuf.fillContent(0);
     ByteBuffer* newStore = makeDataStore(dataRva, exeHndl->m_Repl);
     bool isOk = dataBuf.pasteBuffer(0, newStore, false);
@@ -412,7 +415,7 @@ bool StubMaker::makeStub(PEFile *pe, FunctionsMap &funcMap, FuncReplacements &fu
                 printf("Cannot fetch last section!\n");
                 return false;
             }
-            const size_t SEC_PADDING = 10;
+
             // resize section
             offset_t secROffset = stubHdr->getContentOffset(Executable::RAW, true);
             startOffset = pe->getContentSize() - secROffset;
