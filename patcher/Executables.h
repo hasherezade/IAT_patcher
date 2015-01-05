@@ -13,7 +13,7 @@ signals:
 
 public:
     ExeHandler(AbstractByteBuffer *buf, Executable* exe)
-        : m_Buf(buf), m_Exe(exe)
+        : m_Buf(buf), m_Exe(exe), dataStoreRva(INVALID_ADDR)
     {
         m_FuncMap.wrap(getImports());
         originalEP = exe->getEntryPoint();
@@ -61,7 +61,7 @@ protected:
     Executable* m_Exe;
     //TODO: finish and refactor it
     bool isHooked;
-    offset_t originalEP;
+    offset_t originalEP, dataStoreRva; // TODO: keep params in separate structure
 
 friend class StubMaker;
 };

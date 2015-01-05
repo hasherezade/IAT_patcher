@@ -49,8 +49,11 @@ bool StubMaker::fillHookedInfo(ExeHandler *exeHndl)
             for (size_t id = 0; id< pCnt; id++) {
                 printf("[%d] = %llx\n", id, stub->getParamValue(id));
             }*/
+            //TODO: keep stub params in a separate structure
             exeHndl->originalEP = stub->getParamValue(Stub::OEP);
-            offset_t dataRva = stub->getParamValue(Stub::DATA_RVA);
+            exeHndl->dataStoreRva = stub->getParamValue(Stub::DATA_RVA);
+
+            offset_t dataRva =exeHndl->dataStoreRva;
             offset_t dataRaw = pe->toRaw(dataRva, Executable::RVA);
             BufferView dataBuf(pe, dataRaw, pe->getContentSize() - dataRaw);
             printf("Reading dataStore at = %llx -> %llx\n", dataRva, dataRaw);
@@ -195,6 +198,33 @@ bool StubMaker::readDataStore(AbstractByteBuffer* buf, const offset_t dataRva, F
         }
 
     }
+    return isOk;
+}
+
+bool StubMaker::overwriteDataStore(ExeHandler *exeHndl)
+{
+    if (exeHndl->isHooked == false) return false;
+    Executable *pe = exeHndl->getExe();
+    if (!pe) return false;
+
+    offset_t dataRva = exeHndl->dataStoreRva;
+    offset_t dataRaw = pe->toRaw(dataRva, Executable::RVA);
+    if (dataRaw == INVALID_ADDR || dataRaw == 0) return false;
+
+    BufferView dataBuf(pe, dataRaw, pe->getContentSize() - dataRaw);
+    bufsize_t currentSize = dataBuf.getContentSize();
+    bufsize_t requiredSize = calcDataStoreSize(exeHndl->m_Repl);
+
+    if (requiredSize > currentSize) {
+        bufsize_t dif = requiredSize - currentSize;
+        //TODO: perform resising...
+        printf("Needs resising, dif = %lx\n", dif);
+        return false;
+    }
+    dataBuf.fillContent(0);
+    ByteBuffer* newStore = makeDataStore(dataRva, exeHndl->m_Repl);
+    bool isOk = dataBuf.pasteBuffer(0, newStore, false);
+    delete newStore;
     return isOk;
 }
 

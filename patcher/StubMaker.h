@@ -30,7 +30,10 @@ public:
     {
         if (exeHndl == NULL) return false;
         PEFile *pe = dynamic_cast<PEFile*>(exeHndl->getExe());
-
+        if (exeHndl->isHooked) {
+            printf("File already hooked. Overwriting DataStore...\n");
+            return overwriteDataStore(exeHndl);
+        }
         bool isOk = makeStub(pe, exeHndl->m_FuncMap, exeHndl->m_Repl, settings);
         exeHndl->rewrapFuncMap();
         return isOk;
@@ -52,6 +55,7 @@ protected:
 
     static ByteBuffer* makeDataStore(const offset_t dataRva, FuncReplacements &funcRepl);
     static bool readDataStore(AbstractByteBuffer* storeBuf, const offset_t dataRva, FuncReplacements &out_funcRepl);
+    static bool overwriteDataStore(ExeHandler *exeHndl);
 
     static ByteBuffer* createStub32(PEFile *peFile, offset_t stubRva, offset_t loadLib, offset_t getProcAddr);
 
