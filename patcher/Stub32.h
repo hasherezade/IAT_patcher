@@ -10,6 +10,7 @@ public:
 
     virtual offset_t getSignatureStart() const;
     virtual offset_t getSignatureEnd() const;
+    virtual offset_t getDatastoreOffset() const;
 
 protected:
     virtual void createParams();

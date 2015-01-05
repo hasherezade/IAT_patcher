@@ -262,7 +262,7 @@ void MainWindow::functionsMenuRequested(QPoint pos)
 
     FuncDesc replName = this->m_ExeSelected->getReplAt(m_ThunkSelected);
     //todo: on show?
-    QString libName; 
+    QString libName;
     QString funcName;
     FuncUtil::parseFuncDesc(replName, libName, funcName);
 
@@ -292,6 +292,7 @@ void MainWindow::setReplacement()
     if (libName.length() != 0 && funcName.length() != 0) {
         substName = libName + "." + funcName;
     }
+    if (this->m_ExeSelected->m_Repl.getAt(m_ThunkSelected) == substName) return;
 
     if (this->m_ExeSelected->hook(m_ThunkSelected, substName) == false) {
         QMessageBox::warning(NULL, "Error", "Invalid replacement definition!");
@@ -364,7 +365,7 @@ void MainWindow::onFileLoaded(AbstractByteBuffer* buf)
         Executable *exe = ExeFactory::build(buf, exeType);
         ExeHandler *exeHndl = new ExeHandler(buf, exe);
         if (exeHndl == NULL) throw CustomException("Cannot create handle!");
-        exeHndl->setHookedState(StubMaker::isHooked(exeHndl));
+        StubMaker::fillHookedInfo(exeHndl);
         m_exes.addExe(exeHndl);
 
     } catch (CustomException &e) {

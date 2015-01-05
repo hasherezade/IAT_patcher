@@ -29,9 +29,18 @@ public:
     static bool makeStub(ExeHandler *exeHndl, const StubSettings &settings)
     {
         if (exeHndl == NULL) return false;
+        bool isOk = false;
         PEFile *pe = dynamic_cast<PEFile*>(exeHndl->getExe());
-
-        bool isOk = makeStub(pe, exeHndl->m_FuncMap, exeHndl->m_Repl, settings);
+        if (exeHndl->isHooked) {
+            printf("File already hooked. Overwriting DataStore...\n");
+            isOk = overwriteDataStore(exeHndl);
+        } else {
+            isOk = makeStub(pe, exeHndl->m_FuncMap, exeHndl->m_Repl, settings);
+        }
+        if (isOk) {
+            exeHndl->hasUnapplied = false;
+            exeHndl->isModified = true;
+        }
         exeHndl->rewrapFuncMap();
         return isOk;
     }
@@ -41,12 +50,7 @@ public:
         return countMissingImports(exeHndl->m_FuncMap);
     }
 
-    static bool isHooked(ExeHandler *exeHndl)
-    {
-        if (exeHndl == NULL) return false;
-        PEFile *pe = static_cast<PEFile*> (exeHndl->getExe());
-        return isHooked(pe);
-    }
+    static bool fillHookedInfo(ExeHandler *exeHndl);
 
 protected:
     static Stub* makeStub(PEFile *pe);
@@ -56,12 +60,14 @@ protected:
     static size_t calcNewImportsSize(PEFile *pe, size_t addedFuncCount);
 
     static ByteBuffer* makeDataStore(const offset_t dataRva, FuncReplacements &funcRepl);
+    static bool readDataStore(AbstractByteBuffer* storeBuf, const offset_t dataRva, FuncReplacements &out_funcRepl);
+    static bool overwriteDataStore(ExeHandler *exeHndl);
+
     static ByteBuffer* createStub32(PEFile *peFile, offset_t stubRva, offset_t loadLib, offset_t getProcAddr);
 
     static size_t countMissingImports(FunctionsMap &funcMap);
     static bool makeThunksWriteable(PEFile *pe);
 
-    static bool isHooked(PEFile *pe);
     static bool makeStub(PEFile *pe, FunctionsMap &funcMap, FuncReplacements &funcRepl, const StubSettings &settings);
     static bool addMissingFunctions(PEFile *pe, FunctionsMap &funcMap, bool tryReuse);
 

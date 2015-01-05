@@ -62,16 +62,18 @@ QVariant InfoTableModel::data(const QModelIndex &index, int role) const
 	if (exeHndl == NULL) return QVariant();
     Executable *exe = exeHndl->getExe();
     if (exe == NULL) return QVariant();
-    
+
     if (role == Qt::DisplayRole) {
         return getDisplayData(role, attribute, exeHndl);
     }
 
     if (role == Qt::BackgroundColorRole) {
-        if (exeHndl->hasReplacements()) return QColor(HIGLIHHT_COLOR);
+        if (exeHndl->getUnappliedState() == true) {
+            return QColor(HIGLIHHT_COLOR);
+        }
         return QVariant();
     }
-    
+
     if (role == Qt::DecorationRole && attribute == COL_NAME) {
         if (exe->isBit32()) return QIcon(":/icons/app32.ico");
         if (exe->isBit64()) return QIcon(":/icons/app64.ico");
@@ -106,13 +108,26 @@ QVariant InfoTableModel::data(const QModelIndex &index, int role) const
             if (StubMaker::countMissingImports(exeHndl) > 0) return "Needs to add imports";
             return "Can reuse all imports";
         }
+        if (attribute == COL_HOOKED) {
+            QString info = exeHndl->getHookedState() ? "Hooked": "Not hooked";
+            info += "\nDefined "+ QString::number(exeHndl->m_Repl.size()) + " replacements";
+            return info;
+        }
+        if (attribute == COL_NAME) {
+            QString epInfo = "OEP\t= "+ QString::number( exeHndl->getOriginalEP(), 16 );
+
+            if (exeHndl->getHookedState()) {
+                epInfo += "\nEP \t= "+ QString::number( exeHndl->getCurrentEP(), 16 );
+            }
+            return epInfo;
+        }
         return "";
     }
     return QVariant();
 }
 
 QVariant InfoTableModel::getDisplayData(int role, int attribute, ExeHandler *exeHndl) const
-{   
+{
     Executable *exe = exeHndl->getExe();
     if (exe == NULL) return QVariant();
 
@@ -122,7 +137,11 @@ QVariant InfoTableModel::getDisplayData(int role, int attribute, ExeHandler *exe
         case COL_NAME :
         {
             QFileInfo inputInfo(exe->getFileName());
-            return inputInfo.fileName();
+            QString name = inputInfo.fileName();
+            if (exeHndl->getModifiedState() == true) {
+                name += "*";
+            }
+            return name;
         }
         case COL_RAW_SIZE : return  exe->getMappedSize(Executable::RAW);
         case COL_VIRTUAL_SIZE : return  exe->getMappedSize(Executable::RVA);
@@ -140,6 +159,10 @@ QVariant InfoTableModel::getDisplayData(int role, int attribute, ExeHandler *exe
             ExeNodeWrapper *wr = dynamic_cast<ExeNodeWrapper*>(pe->getWrapper(PEFile::WR_DIR_ENTRY + pe::DIR_IMPORT));
             if (!wr) return 0;
             return qint64(wr->getEntriesCount());
+        }
+        case COL_HOOKED :
+        {
+            return qint64(exeHndl->m_Repl.size());
         }
     }
     return QVariant();

@@ -24,10 +24,10 @@ bool FuncReplacements::hook(offset_t thunk, FuncDesc newFunc)
 FuncDesc FuncReplacements::getAt(offset_t thunk)
 {
     if (hasAt(thunk) == false) return "";
-    return m_replacements[thunk]; 
+    return m_replacements[thunk];
 }
 
 bool FuncReplacements::hasAt(offset_t thunk)
 {
-    return m_replacements.find(thunk) != m_replacements.end(); 
+    return m_replacements.find(thunk) != m_replacements.end();
 }

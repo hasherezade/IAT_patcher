@@ -1,17 +1,28 @@
 #include "Stub.h"
 
-bool StubParam::insertIntoBuffer(ByteBuffer* buf)
+bool StubParam::insertIntoBuffer(AbstractByteBuffer* buf)
 {
     if (buf == NULL) return false;
 
     offset_t fullOffset = this->m_bigOffset + this->m_smallOffset;
-    BYTE *toFill = buf->getContentAt(fullOffset, this->m_valueSize);
-    if (toFill == NULL) return false;
-
-    memcpy(toFill, &m_value, m_valueSize);
+    bool isOk = buf->setNumValue(fullOffset, this->m_valueSize, this->m_value);
+    //TODO - verify if setting succeseded?
     return true;
 }
 
+bool StubParam::readFromBuffer(AbstractByteBuffer* buf)
+{
+    if (buf == NULL) return false;
+
+    offset_t fullOffset = this->m_bigOffset + this->m_smallOffset;
+    bool isOk = false;
+
+    offset_t value = buf->getNumValue(fullOffset, this->m_valueSize, &isOk);
+    if (!isOk) return false;
+
+    this->m_value = value;
+    return true;
+}
 //-----
 
 ByteBuffer* Stub::createStubBuffer()
@@ -39,7 +50,7 @@ ByteBuffer* Stub::bufferStubData()
     return stubBuf;
 }
 
-bool Stub::fillParam(size_t id, ByteBuffer* buf)
+bool Stub::fillParam(size_t id, AbstractByteBuffer* buf)
 {
     StubParam *param = this->getParam(id);
     if (param == NULL) {
@@ -53,12 +64,62 @@ bool Stub::fillParam(size_t id, ByteBuffer* buf)
     return param->insertIntoBuffer(buf);
 }
 
-bool Stub::fillParams(ByteBuffer* buf)
+
+bool Stub::fillParams(AbstractByteBuffer* buf)
 {
     std::map<size_t, StubParam*>::iterator itr;
     for (itr = m_params.begin(); itr != m_params.end(); itr++) {
         size_t paramId = itr->first;
         if (fillParam(paramId, buf) == false) {
+            return false;
+        }
+    }
+    return true;
+}
+
+offset_t Stub::getAbsoluteValue(StubParam *param)
+{
+    if (param == NULL) {
+        return INVALID_ADDR;
+    }
+
+    offset_t myValue = param->m_value;
+
+    if (param->m_relativeToId != param->m_id) {
+        StubParam *relParam = this->getParam(param->m_relativeToId);
+        if (relParam == NULL) return INVALID_ADDR;
+
+        offset_t dif = ((int32_t) param->m_value);
+        offset_t relValue = relParam->m_value;
+
+        myValue = relParam->m_value + dif + param->getTotalOffset() + param->getValueSize();
+    }
+    return myValue;
+}
+
+bool Stub::readParam(size_t id, AbstractByteBuffer* buf)
+{
+    StubParam *param = this->getParam(id);
+    if (param == NULL) {
+        printf("Param: %d not found!\n", id);
+        return false;
+    }
+    if (param->readFromBuffer(buf) == false) return false;
+
+    offset_t myValue = getAbsoluteValue(param);
+    if (myValue == INVALID_ADDR) return false;
+
+    param->setValue(myValue);
+    return true;
+}
+
+
+bool Stub::readParams(AbstractByteBuffer* buf)
+{
+    std::map<size_t, StubParam*>::iterator itr;
+    for (itr = m_params.begin(); itr != m_params.end(); itr++) {
+        size_t paramId = itr->first;
+        if (!readParam(paramId, buf)) {
             return false;
         }
     }
