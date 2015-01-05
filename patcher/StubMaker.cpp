@@ -52,9 +52,9 @@ bool StubMaker::fillHookedInfo(ExeHandler *exeHndl)
             exeHndl->originalEP = stub->getParamValue(Stub::OEP);
             offset_t dataRva = stub->getParamValue(Stub::DATA_RVA);
             offset_t dataRaw = pe->toRaw(dataRva, Executable::RVA);
-            BufferView* dataBuf = new BufferView(pe, dataRaw, pe->getContentSize() - dataRaw);
+            BufferView dataBuf(pe, dataRaw, pe->getContentSize() - dataRaw);
             printf("Reading dataStore at = %llx -> %llx\n", dataRva, dataRaw);
-            readDataStore(dataBuf, dataRva, exeHndl->m_Repl);
+            readDataStore(&dataBuf, dataRva, exeHndl->m_Repl);
             printf("Params OK, OEP = %llx\n", exeHndl->originalEP);
         }
     }
