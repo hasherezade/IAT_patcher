@@ -38,6 +38,7 @@ public:
             isOk = makeStub(pe, exeHndl->m_FuncMap, exeHndl->m_Repl, settings);
         }
         if (isOk) {
+            makeThunksWriteable(pe);
             exeHndl->hasUnapplied = false;
             exeHndl->isModified = true;
         }
