@@ -32,13 +32,8 @@ void ExeController::onHookRequested(ExeHandler* exeHndl, StubSettings &settings)
             return;
         }
     }
-    /*
-    if (pe->getBitMode() != Executable::BITS_32) {
-        QMessageBox::warning(NULL, "Cannot hook!", "PE64 is not supported yet!");
-        return;
-    }
-    */
-    if (exeHndl->hasReplacements() == false) {
+
+    if (exeHndl->hasReplacements() == false && exeHndl->getHookedState() == false) {
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(NULL, "No replacements!",
             "You haven't defined any replacement functions.\nDo you really want to add an empty stub?",
@@ -80,6 +75,13 @@ void ExeController::onSaveRequested(ExeHandler* exeHndl)
     Executable *exe = exeHndl->getExe();
     if (exe == NULL) return;
 
+    if (exeHndl->getUnappliedState()) {
+        QMessageBox::StandardButton reply;
+        QMessageBox::warning(NULL, "Unapplied replacements!",
+            "The file has unapplied replacements. Hook the file to apply them.");
+        return;
+
+    }
     if (exeHndl->getHookedState() == false) {
         //QMessageBox::warning(NULL, "Nothing to save!", "Hook the file first!");
 

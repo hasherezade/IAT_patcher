@@ -139,7 +139,7 @@ QVariant InfoTableModel::getDisplayData(int role, int attribute, ExeHandler *exe
             QFileInfo inputInfo(exe->getFileName());
             QString name = inputInfo.fileName();
             if (exeHndl->getModifiedState() == true) {
-                name += "*";
+                name = "* " + name;
             }
             return name;
         }
