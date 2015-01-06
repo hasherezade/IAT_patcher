@@ -337,13 +337,14 @@ bool StubMaker::addMissingFunctions(PEFile *pe, FunctionsMap &funcMap, bool tryR
     return isOk;
 }
 
-bool StubMaker::makeThunksWriteable(PEFile *pe)
+bool StubMaker::makeThunksWriteable(PEFile *pe, FuncReplacements* funcRepl)
 {
-    //todo: optimize it: do it per lib, not per single thunk!
     ImportDirWrapper* imps = dynamic_cast<ImportDirWrapper* >( pe->getDataDirEntry(pe::DIR_IMPORT));
     if (imps == NULL) return false;
 
-    QList<offset_t> thunks = imps->getThunksList();
+    QList<offset_t> thunks = (funcRepl) ? funcRepl->getThunks() : imps->getThunksList();
+    //TODO: optimize it
+
     for (size_t i = 0; i < thunks.size(); i++) {
         offset_t thunk = thunks[i];
         SectionHdrWrapper *sHdr = pe->getSecHdrAtOffset(thunk, Executable::RVA, true);

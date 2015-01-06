@@ -38,7 +38,7 @@ public:
             isOk = makeStub(pe, exeHndl->m_FuncMap, exeHndl->m_Repl, settings);
         }
         if (isOk) {
-            makeThunksWriteable(pe);
+            makeThunksWriteable(pe, &exeHndl->m_Repl);
             exeHndl->hasUnapplied = false;
             exeHndl->isModified = true;
         }
@@ -67,7 +67,7 @@ protected:
     static ByteBuffer* createStub32(PEFile *peFile, offset_t stubRva, offset_t loadLib, offset_t getProcAddr);
 
     static size_t countMissingImports(FunctionsMap &funcMap);
-    static bool makeThunksWriteable(PEFile *pe);
+    static bool makeThunksWriteable(PEFile *pe, FuncReplacements* m_funcRepl = NULL);
 
     static bool makeStub(PEFile *pe, FunctionsMap &funcMap, FuncReplacements &funcRepl, const StubSettings &settings);
     static bool addMissingFunctions(PEFile *pe, FunctionsMap &funcMap, bool tryReuse);
