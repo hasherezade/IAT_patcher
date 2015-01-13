@@ -1,8 +1,8 @@
 #pragma once
 #include <bearparser.h>
 
-#include "Executables.h"
-#include "FuncReplacements.h"
+#include "../Executables.h"
+#include "../FuncReplacements.h"
 
 
 class StubParam

@@ -3,7 +3,7 @@
 
 #include "Executables.h"
 #include "FuncReplacements.h"
-#include "Stub.h"
+#include "stub/Stub.h"
 
 class StubSettings : public QObject
 {

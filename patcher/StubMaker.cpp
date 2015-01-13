@@ -1,7 +1,7 @@
 #include "StubMaker.h"
 
-#include "Stub32.h"
-#include "Stub64.h"
+#include "stub/Stub32.h"
+#include "stub/Stub64.h"
 
 const size_t SEC_PADDING = 10;
 
