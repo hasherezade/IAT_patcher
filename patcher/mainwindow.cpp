@@ -305,7 +305,7 @@ void MainWindow::setReplacement()
     }
     if (this->m_ExeSelected->m_Repl.getAt(m_ThunkSelected) == substName) return;
 
-    if (this->m_ExeSelected->hook(m_ThunkSelected, substName) == false) {
+    if (this->m_ExeSelected->defineReplacement(m_ThunkSelected, substName) == false) {
         QMessageBox::warning(NULL, "Error", "Invalid replacement definition!");
     } else {
         this->m_replacementsDialog->hide();

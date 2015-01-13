@@ -36,7 +36,7 @@ bool ImportsTableModel::setData(const QModelIndex &index, const QVariant &data, 
 	QString substName = data.toString();
     if (this->m_ExeHandler->m_Repl.getAt(thunk) == substName) return false;
 
-    if (this->m_ExeHandler->hook(thunk, substName) == false) {
+    if (this->m_ExeHandler->defineReplacement(thunk, substName) == false) {
         QMessageBox::warning(NULL, "Error", "Invalid format supplied!\nValid: <library>.<function>");
         return false;
     }

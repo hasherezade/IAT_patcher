@@ -1,6 +1,5 @@
 #include "Executables.h"
 
-
 ExeHandler* Executables::at(size_t index) const
 {
     if (index >= size()) return NULL;

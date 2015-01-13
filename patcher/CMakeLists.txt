@@ -18,8 +18,9 @@ set (stub_hdrs
 
 set (hdrs
     StubMaker.h
-    Executables.h
     FuncReplacements.h
+    ExeHandler.h
+    Executables.h
     ExeController.h
     InfoTableModel.h
     ImportsTableModel.h
@@ -36,8 +37,9 @@ set (stub_srcs
 
 set (srcs
     StubMaker.cpp
-    Executables.cpp
     FuncReplacements.cpp
+    ExeHandler.cpp
+    Executables.cpp
     ExeController.cpp
     InfoTableModel.cpp
     ImportsTableModel.cpp
