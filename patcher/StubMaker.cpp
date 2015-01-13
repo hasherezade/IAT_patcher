@@ -348,6 +348,7 @@ bool StubMaker::makeThunksWriteable(PEFile *pe, FuncReplacements* funcRepl)
     for (size_t i = 0; i < thunks.size(); i++) {
         offset_t thunk = thunks[i];
         SectionHdrWrapper *sHdr = pe->getSecHdrAtOffset(thunk, Executable::RVA, true);
+        if (sHdr == NULL) continue;
         DWORD oldCharact = sHdr->getCharacteristics();
         sHdr->setCharacteristics(oldCharact | 0xC0000000);
     }
