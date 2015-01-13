@@ -2,6 +2,7 @@
 #include <QFile>
 #include <bearparser.h>
 
+#include "FunctionsMap.h"
 #include "FuncReplacements.h"
 
 class ExeHandler : public QObject
