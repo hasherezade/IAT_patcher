@@ -8,8 +8,8 @@ void FileLoader::run()
     try {
         if (m_FileName == NULL) return;
         parse(m_FileName);
-	} catch (...) {
-	}
+    } catch (...) { }
+
     emit loaded(m_Buffer);
 }
 
@@ -22,6 +22,7 @@ bool FileLoader::parse(QString &fileName)
         m_Buffer = new FileBuffer(fileName, MINBUF);
         isLoaded = true;
     } catch (CustomException &e) { }
-    
-	return isLoaded;
+
+    return isLoaded;
 }
+
