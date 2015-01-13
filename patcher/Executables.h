@@ -18,11 +18,14 @@ public:
     {
         m_FuncMap.wrap(getImports());
         originalEP = exe->getEntryPoint();
+        m_fileName = (m_Exe) ? m_Exe->getFileName(): "";
         connect(&m_Repl, SIGNAL(stateChanged()), this, SLOT(onChildStateChanged()));
     }
 
     virtual ~ExeHandler() { delete m_Exe, delete m_Buf;}
     Executable* getExe() { return m_Exe; }
+
+    QString getFileName() { return m_fileName; }
 
     bool hook(offset_t thunk, FuncDesc newFunc)
     {
@@ -65,12 +68,16 @@ protected:
     AbstractByteBuffer *m_Buf;
     Executable* m_Exe;
 
+    QString m_fileName;
+    void setFileName(QString fileName) { this->m_fileName = fileName; emit stateChanged(); }
+
     bool isModified, hasUnapplied;
     //TODO: finish and refactor it
     bool isHooked;
     offset_t originalEP, dataStoreRva; // TODO: keep params in separate structure
 
 friend class StubMaker;
+friend class ExeController;
 };
 
 class Executables : public QObject

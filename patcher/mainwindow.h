@@ -83,12 +83,10 @@ private slots:
     void selectExe(ExeHandler* exe) 
     { 
         m_ExeSelected = exe;
-        QString fName = "";
-        if (exe && exe->getExe())
-            fName = exe->getExe()->getFileName();
-        this->m_ui.fileEdit->setText(fName);
-        emit exeSelected(exe); 
+        emit exeSelected(exe);
     }
+
+    void refreshExeView(ExeHandler* exe);
 
     void customMenuRequested(QPoint pos);
     void functionsMenuRequested(QPoint pos);

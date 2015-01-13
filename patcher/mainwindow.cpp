@@ -73,9 +73,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect( m_ui.outputTable->selectionModel(), SIGNAL( currentRowChanged(QModelIndex,QModelIndex)), this, SLOT( rowChangedSlot(QModelIndex,QModelIndex) ) );
 	connect( this, SIGNAL( exeSelected(ExeHandler*)), impModel, SLOT( setExecutable(ExeHandler*) ) );
+    connect( this, SIGNAL( exeSelected(ExeHandler*)), this, SLOT( refreshExeView(ExeHandler*) ) );
 
     connect( this, SIGNAL( exeUpdated(ExeHandler*)), impModel, SLOT( setExecutable(ExeHandler*) ) );
     connect( this, SIGNAL( exeUpdated(ExeHandler*)), infoModel, SLOT( onExeListChanged() ) );
+    connect( &this->exeController, SIGNAL( exeUpdated(ExeHandler*)), this, SLOT( refreshExeView(ExeHandler*) ) );
 
     connect( &this->exeController, SIGNAL( exeUpdated(ExeHandler*)), infoModel, SLOT( onExeListChanged() ) );
 
@@ -111,6 +113,15 @@ void MainWindow::filterFuncs(const QString &str)
 {
     m2->setFilterRegExp(QRegExp(str, Qt::CaseInsensitive, QRegExp::FixedString));
     m2->setFilterKeyColumn(2);
+}
+
+void MainWindow::refreshExeView(ExeHandler* exe)
+{
+    if (m_ExeSelected == exe) {
+        QString fName = "";
+        if (exe) fName = exe->getFileName();
+        this->m_ui.fileEdit->setText(fName);
+    }
 }
 
 void MainWindow::loadingStatusChanged()
@@ -184,7 +195,7 @@ void MainWindow::reloadExe(ExeHandler* exe)
 {
     QString fName = "";
     if (exe && exe->getExe())
-        fName = exe->getExe()->getFileName();
+        fName = exe->getFileName();
     this->removeExe(exe);
     this->parse(fName);
 }

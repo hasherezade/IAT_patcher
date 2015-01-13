@@ -95,7 +95,7 @@ void ExeController::onSaveRequested(ExeHandler* exeHndl)
             return;
         }
     }
-    QFileInfo inputInfo(exe->getFileName());
+    QFileInfo inputInfo(exeHndl->getFileName());
 
     QString infoStr ="Save executable as:";
     QString fileName = QFileDialog::getSaveFileName(
@@ -108,7 +108,13 @@ void ExeController::onSaveRequested(ExeHandler* exeHndl)
 
     try {
         AbstractFileBuffer::dump(fileName, *exe, true);
+        exeHndl->setFileName(fileName);
+        exeHndl->isModified = false;
+        emit exeUpdated(exeHndl);
+
     } catch (CustomException &e) {
         QMessageBox::warning(NULL, "Error!", e.getInfo());
     }
+    
 }
+

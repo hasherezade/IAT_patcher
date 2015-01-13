@@ -136,7 +136,7 @@ QVariant InfoTableModel::getDisplayData(int role, int attribute, ExeHandler *exe
     switch (attribute) {
         case COL_NAME :
         {
-            QFileInfo inputInfo(exe->getFileName());
+            QFileInfo inputInfo(exeHndl->getFileName());
             QString name = inputInfo.fileName();
             if (exeHndl->getModifiedState() == true) {
                 name = "* " + name;

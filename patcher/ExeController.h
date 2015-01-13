@@ -17,13 +17,12 @@ public:
     };
 
     ExeController(QObject* parent = NULL) {}
-    virtual ~ExeController() { printf("~ExeController\n"); }
+    virtual ~ExeController() { }
 
 signals:
     void exeUpdated(ExeHandler* exeHndl);
 
 public slots:
-
     void onHookRequested(ExeHandler* exeHndl, StubSettings &settings);
     void onSaveRequested(ExeHandler* exeHndl);
     void onUnloadRequested(ExeHandler* exeHndl) {}

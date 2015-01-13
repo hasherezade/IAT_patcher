@@ -33,9 +33,9 @@ QStringList Executables::listFiles()
     QString fileName = "";
 
     for (itr = m_Exes.begin(); itr != m_Exes.end(); itr++) {
-        ExeHandler *exe = (*itr);
-        if (exe->getExe() != NULL) {
-            fileName = exe->getExe()->getFileName();
+        ExeHandler *exeHndl = (*itr);
+        if (exeHndl->getExe() != NULL) {
+            fileName = exeHndl->getFileName();
             fileNames << fileName;
         }
     }
