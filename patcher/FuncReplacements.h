@@ -49,13 +49,12 @@ public:
     size_t save(QString &fleName);
 
     bool defineReplacement(offset_t thunk, FuncDesc newFunc);
-    size_t calcBookedSpace();
+
+    size_t size() { return m_replacements.size(); }
+    QList<offset_t> getThunks() { return m_replacements.keys(); }
 
     FuncDesc getAt(offset_t thunk);
     bool hasAt(offset_t thunk);
-    size_t size() { return m_replacements.size(); }
-
-    QList<offset_t> getThunks() { return m_replacements.keys(); }
 
 protected:
     bool _defineReplacement(offset_t thunk, FuncDesc newFunc);

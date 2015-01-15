@@ -95,12 +95,28 @@ bool StubMaker::setStubParams(Stub* stb, PEFile *pe, const offset_t newEntry, co
     return true;
 }
 
+size_t StubMaker::calcReplNamesSize(FuncReplacements &funcRepl)
+{
+    const size_t PADDING = 1;
+    size_t requiredLen = PADDING;
+
+    QList<offset_t> thunks = funcRepl.getThunks();
+
+    QList<offset_t>::Iterator itr;
+    for (itr = thunks.begin(); itr != thunks.end(); itr++) {
+        FuncDesc &desc = funcRepl.getAt(*itr);
+        requiredLen += desc.size();
+        requiredLen += PADDING;
+    }
+    return requiredLen;
+}
+
 size_t StubMaker::calcDataStoreSize(FuncReplacements &funcRepl)
 {
     const size_t ELEMENTS = 4; //libRVA, funcRVA, thunk, EMPTY
 
     const size_t OFFSETS_SPACE = (funcRepl.size() * ELEMENTS * sizeof(DWORD)) + sizeof(DWORD) * 2;
-    const size_t NAMES_SPACE = funcRepl.calcBookedSpace();
+    const size_t NAMES_SPACE = calcReplNamesSize(funcRepl);
 
     const size_t TOTAL_SPACE = OFFSETS_SPACE + NAMES_SPACE;
     return TOTAL_SPACE;
@@ -111,7 +127,7 @@ ByteBuffer* StubMaker::makeDataStore(const offset_t dataRva, FuncReplacements &f
     const size_t ELEMENTS = 4; //libRVA, funcRVA, thunk, EMPTY
 
     const size_t OFFSETS_SPACE = (funcRepl.size() * ELEMENTS * sizeof(DWORD)) + sizeof(DWORD) * 2;
-    const size_t NAMES_SPACE = funcRepl.calcBookedSpace();
+    const size_t NAMES_SPACE = calcReplNamesSize(funcRepl);
 
     const size_t TOTAL_SPACE = OFFSETS_SPACE + NAMES_SPACE;
     char *buffer = new char[TOTAL_SPACE];
@@ -198,7 +214,6 @@ bool StubMaker::readDataStore(AbstractByteBuffer* buf, const offset_t dataRva, F
             FuncDesc desc = dllName + "." + funcName;
             funcRepl.defineReplacement(thunk, desc);
         }
-
     }
     return isOk;
 }

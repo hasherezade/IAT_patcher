@@ -57,6 +57,7 @@ protected:
     static Stub* makeStub(PEFile *pe);
     static bool setStubParams(Stub* stb, PEFile *pe, const offset_t newEntry, const offset_t dataRva, ImportsLookup &funcMap);
 
+    static size_t calcReplNamesSize(FuncReplacements &funcRepl);
     static size_t calcDataStoreSize(FuncReplacements &funcRepl);
     static size_t calcNewImportsSize(PEFile *pe, size_t addedFuncCount);
 

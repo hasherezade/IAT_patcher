@@ -28,20 +28,6 @@ bool FuncReplacements::_defineReplacement(offset_t thunk, FuncDesc newFunc)
     return false;
 }
 
-size_t FuncReplacements::calcBookedSpace()
-{
-        const size_t PADDING = 1;
-        size_t requiredLen = PADDING;
-
-        QMap<offset_t, FuncDesc>::Iterator itr;
-        for (itr = m_replacements.begin(); itr != m_replacements.end(); itr++) {
-            FuncDesc &desc = itr.value();
-            requiredLen += desc.size();
-            requiredLen += PADDING;
-        }
-        return requiredLen;
-}
-
 FuncDesc FuncReplacements::getAt(offset_t thunk)
 {
     if (hasAt(thunk) == false) return "";
