@@ -196,7 +196,7 @@ bool StubMaker::readDataStore(AbstractByteBuffer* buf, const offset_t dataRva, F
             QString funcName = buf->getStringValue(funcNameOffset);
             //TODO: refactor it...
             FuncDesc desc = dllName + "." + funcName;
-            funcRepl.hook(thunk, desc);
+            funcRepl.defineReplacement(thunk, desc);
         }
 
     }

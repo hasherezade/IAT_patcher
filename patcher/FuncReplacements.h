@@ -45,28 +45,16 @@ public:
     FuncReplacements() { }
     ~FuncReplacements() { }
 
-    bool hook(offset_t thunk, FuncDesc newFunc);
+    bool defineReplacement(offset_t thunk, FuncDesc newFunc);
+    size_t calcBookedSpace();
+
     FuncDesc getAt(offset_t thunk);
     bool hasAt(offset_t thunk);
-
     size_t size() { return m_replacements.size(); }
+
     QList<offset_t> getThunks() { return m_replacements.keys(); }
-
-    size_t calcBookedSpace()
-    {
-        const size_t PADDING = 1;
-        size_t requiredLen = PADDING;
-
-        QMap<offset_t, FuncDesc>::Iterator itr;
-        for (itr = m_replacements.begin(); itr != m_replacements.end(); itr++) {
-            FuncDesc &desc = itr.value();
-            requiredLen += desc.size();
-            requiredLen += PADDING;
-        }
-        return requiredLen;
-    }
 
 protected:
     QMap<offset_t, FuncDesc> m_replacements;
-
 };
+
