@@ -227,15 +227,20 @@ void MainWindow::makeCustomMenu()
     addExeAction(customMenu, "Save as...", ExeController::ACTION_SAVE);
     addExeAction(customMenu, "Reload", ExeController::ACTION_RELOAD);
     addExeAction(customMenu, "Unload", ExeController::ACTION_UNLOAD);
+    customMenu->addSeparator();
+    addExeAction(customMenu, "Export replacements", ExeController::ACTION_EXPORT_REPL);
+    addExeAction(customMenu, "Import replacements", ExeController::ACTION_IMPORT_REPL);
 }
 
 void MainWindow::makeFunctionsMenu()
 {
     this->functionsMenu = new QMenu(this);
+
     QAction *settingsAction = new QAction("Define replacement", functionsMenu);
     connect(settingsAction, SIGNAL(triggered()), this->m_replacementsDialog, SLOT(show()));
     functionsMenu->addAction(settingsAction);
 }
+
 
 void MainWindow::makeFileMenu()
 {
@@ -316,7 +321,7 @@ void MainWindow::setReplacement()
 void MainWindow::takeAction()
 {
     QAction *action = qobject_cast<QAction *>(sender());
-
+    //TODO : refactor it
     if (action->data() == ExeController::ACTION_HOOK) {
         emit hookRequested(this->m_ExeSelected);
         return;
@@ -331,6 +336,14 @@ void MainWindow::takeAction()
     }
     if (action->data() == ExeController::ACTION_RELOAD) {
         this->reloadExe(this->m_ExeSelected);
+        return;
+    }
+    if (action->data() == ExeController::ACTION_IMPORT_REPL) {
+        exeController.onImportReplacements(this->m_ExeSelected);
+        return;
+    }
+    if (action->data() == ExeController::ACTION_EXPORT_REPL) {
+        exeController.onExportReplacements(this->m_ExeSelected);
         return;
     }
 }

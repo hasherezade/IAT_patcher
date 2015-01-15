@@ -76,14 +76,12 @@ void ExeController::onSaveRequested(ExeHandler* exeHndl)
     if (exe == NULL) return;
 
     if (exeHndl->getUnappliedState()) {
-        QMessageBox::StandardButton reply;
         QMessageBox::warning(NULL, "Unapplied replacements!",
             "The file has unapplied replacements. Hook the file to apply them.");
         return;
 
     }
     if (exeHndl->getHookedState() == false) {
-        //QMessageBox::warning(NULL, "Nothing to save!", "Hook the file first!");
 
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(NULL, "Unhooked file!",
@@ -115,6 +113,56 @@ void ExeController::onSaveRequested(ExeHandler* exeHndl)
     } catch (CustomException &e) {
         QMessageBox::warning(NULL, "Error!", e.getInfo());
     }
-    
 }
 
+void ExeController::onExportReplacements(ExeHandler* exeHndl)
+{
+    if (exeHndl == NULL) return;
+
+    if (exeHndl->hasReplacements() == false) {
+        QMessageBox::warning(NULL, "Cannot save!", "The file have NO replacements defined!");
+        return;
+    }
+    QString infoStr ="Save replacements as...";
+    QFileInfo inputInfo(exeHndl->getFileName());
+
+    QString fileName = QFileDialog::getSaveFileName(
+        NULL,
+        infoStr,
+        inputInfo.absoluteDir().path(),
+        "Config file (*.txt);;Config file (*.cfg);;All files (*.*)"
+    );
+    if (fileName.length() == 0) return;
+
+    size_t counter = exeHndl->m_Repl.save(fileName);
+    if (counter == 0) {
+        QMessageBox::warning(NULL, "Error!", "Cannot export!");
+    } else {
+        QString ending =  (counter > 1) ? "s":" ";
+        QMessageBox::information(NULL, "Done!", "Exported: " + QString::number(counter) + " replacement" + ending);
+    }
+}
+
+void ExeController::onImportReplacements(ExeHandler* exeHndl)
+{
+    if (exeHndl == NULL) return;
+
+    QString infoStr ="Import replacements";
+    QFileInfo inputInfo(exeHndl->getFileName());
+
+    QString fileName = QFileDialog::getOpenFileName(
+        NULL,
+        infoStr,
+        inputInfo.absoluteDir().path(),
+        "Config file (*.txt);;Config file (*.cfg);;All files (*.*)"
+    );
+    if (fileName.length() == 0) return;
+    
+    size_t counter = exeHndl->m_Repl.load(fileName);
+    if (counter == 0) {
+        QMessageBox::warning(NULL, "Error!", "Cannot import!");
+    } else {
+        QString ending =  (counter > 1) ? "s":" ";
+        QMessageBox::information(NULL, "Done!", "Imported: " + QString::number(counter) + " replacement" + ending);
+    }
+}

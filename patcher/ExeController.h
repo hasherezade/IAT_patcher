@@ -13,6 +13,8 @@ public:
         ACTION_SAVE,
         ACTION_UNLOAD,
         ACTION_RELOAD,
+        ACTION_EXPORT_REPL,
+        ACTION_IMPORT_REPL,
         COUNT_ACTION
     };
 
@@ -25,5 +27,8 @@ signals:
 public slots:
     void onHookRequested(ExeHandler* exeHndl, StubSettings &settings);
     void onSaveRequested(ExeHandler* exeHndl);
-    void onUnloadRequested(ExeHandler* exeHndl) {}
+    //void onUnloadRequested(ExeHandler* exeHndl) {}
+
+    void onExportReplacements(ExeHandler* exeHndl);
+    void onImportReplacements(ExeHandler* exeHndl);
 };

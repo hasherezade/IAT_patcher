@@ -45,6 +45,9 @@ public:
     FuncReplacements() { }
     ~FuncReplacements() { }
 
+    size_t load(QString &fleName);
+    size_t save(QString &fleName);
+
     bool defineReplacement(offset_t thunk, FuncDesc newFunc);
     size_t calcBookedSpace();
 
@@ -55,6 +58,8 @@ public:
     QList<offset_t> getThunks() { return m_replacements.keys(); }
 
 protected:
+    bool _defineReplacement(offset_t thunk, FuncDesc newFunc);
+
     QMap<offset_t, FuncDesc> m_replacements;
 };
 
