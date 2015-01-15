@@ -250,6 +250,9 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="acceptDrops">
+             <bool>false</bool>
+            </property>
             <property name="readOnly">
              <bool>false</bool>
             </property>
