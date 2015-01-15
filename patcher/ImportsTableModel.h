@@ -86,6 +86,6 @@ protected:
     }
 
     ExeHandler* m_ExeHandler;
-    FunctionsMap *m_FuncMap;
+    ImportsLookup *m_FuncMap;
     int countElements() const { return (m_FuncMap == NULL) ? 0 : m_FuncMap->countImps(); }
 };

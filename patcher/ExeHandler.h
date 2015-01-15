@@ -2,7 +2,7 @@
 #include <QFile>
 #include <bearparser.h>
 
-#include "FunctionsMap.h"
+#include "ImportsLookup.h"
 #include "FuncReplacements.h"
 
 class ExeHandler : public QObject
@@ -52,7 +52,7 @@ public:
     offset_t getOriginalEP() { return originalEP; }
     offset_t getCurrentEP() { return m_Exe->getEntryPoint(); }
 
-    FunctionsMap m_FuncMap;
+    ImportsLookup m_FuncMap;
     FuncReplacements m_Repl;
 
 protected slots:

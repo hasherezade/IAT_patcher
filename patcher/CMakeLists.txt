@@ -19,7 +19,7 @@ set (stub_hdrs
 set (hdrs
     StubMaker.h
     FuncReplacements.h
-    FunctionsMap.h
+    ImportsLookup.h
     ExeHandler.h
     Executables.h
     ExeController.h
@@ -39,7 +39,7 @@ set (stub_srcs
 set (srcs
     StubMaker.cpp
     FuncReplacements.cpp
-    FunctionsMap.cpp
+    ImportsLookup.cpp
     ExeHandler.cpp
     Executables.cpp
     ExeController.cpp

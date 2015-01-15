@@ -1,6 +1,6 @@
-#include "FunctionsMap.h"
+#include "ImportsLookup.h"
 
-void FunctionsMap::wrap(ImportDirWrapper* imports)
+void ImportsLookup::wrap(ImportDirWrapper* imports)
 {
     m_Thunks.clear();
     m_Imports = imports;
@@ -10,7 +10,7 @@ void FunctionsMap::wrap(ImportDirWrapper* imports)
     wrapFunctions();
 }
 
-bool FunctionsMap::hasLib(QString libName)
+bool ImportsLookup::hasLib(QString libName)
 {
     libName = libName.toUpper();
     QMap<QString, FuncToThunk>::iterator itr = m_libs.find(libName);
@@ -18,7 +18,7 @@ bool FunctionsMap::hasLib(QString libName)
     return true;
 }
 
-bool FunctionsMap::hasFunc(QString funcName)
+bool ImportsLookup::hasFunc(QString funcName)
 {
     funcName = funcName.toUpper();
     FuncToThunk::iterator itr = m_func.find(funcName);
@@ -26,7 +26,7 @@ bool FunctionsMap::hasFunc(QString funcName)
     return true;
 }
 
-offset_t FunctionsMap::findThunk(QString libName, QString funcName)
+offset_t ImportsLookup::findThunk(QString libName, QString funcName)
 {
     libName = libName.toUpper();
     funcName = funcName.toUpper();
@@ -42,7 +42,7 @@ offset_t FunctionsMap::findThunk(QString libName, QString funcName)
 
 /* protected */
 
-void FunctionsMap::wrapFunctions()
+void ImportsLookup::wrapFunctions()
 {
     for (size_t i = 0; i < m_Thunks.size(); i++) {
         offset_t thunk = m_Thunks[i];
@@ -54,7 +54,7 @@ void FunctionsMap::wrapFunctions()
     }
 }
 
-bool FunctionsMap::addFunc(QString libName, QString funcName, offset_t thunk)
+bool ImportsLookup::addFunc(QString libName, QString funcName, offset_t thunk)
 {
     if (libName.size() == 0 || funcName.size() == 0 || thunk == INVALID_ADDR) return false;
 

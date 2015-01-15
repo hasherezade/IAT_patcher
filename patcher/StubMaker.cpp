@@ -5,7 +5,7 @@
 
 const size_t SEC_PADDING = 10;
 
-size_t StubMaker::countMissingImports(FunctionsMap &funcMap)
+size_t StubMaker::countMissingImports(ImportsLookup &funcMap)
 {
     QString libName = "Kernel32.dll";
     QStringList funcNames = (QStringList() << "LoadLibraryA" << "GetProcAddress"); // << "VirtualProtect"
@@ -80,7 +80,7 @@ Stub* StubMaker::makeStub(PEFile *pe)
     return stb;
 }
 
-bool StubMaker::setStubParams(Stub* stb, PEFile *pe, const offset_t newEntry, const offset_t dataRva, FunctionsMap &funcMap)
+bool StubMaker::setStubParams(Stub* stb, PEFile *pe, const offset_t newEntry, const offset_t dataRva, ImportsLookup &funcMap)
 {
     offset_t loadLib = funcMap.findThunk("Kernel32.dll","LoadLibraryA");
     offset_t getProc = funcMap.findThunk("Kernel32.dll","GetProcAddress");
@@ -286,7 +286,7 @@ ImportEntryWrapper* StubMaker::addLibrary(PEFile *pe, QString name, offset_t &st
     return libWr;
 }
 
-bool StubMaker::addMissingFunctions(PEFile *pe, FunctionsMap &funcMap, bool tryReuse)
+bool StubMaker::addMissingFunctions(PEFile *pe, ImportsLookup &funcMap, bool tryReuse)
 {
     offset_t storageOffset = 0;
     QString library = "Kernel32.dll";
@@ -368,7 +368,7 @@ size_t StubMaker::calcNewImportsSize(PEFile *pe, size_t addedFuncCount)
     return impNewSize;
 }
 
-bool StubMaker::makeStub(PEFile *pe, FunctionsMap &funcMap, FuncReplacements &funcRepl, const StubSettings &settings)
+bool StubMaker::makeStub(PEFile *pe, ImportsLookup &funcMap, FuncReplacements &funcRepl, const StubSettings &settings)
 {
     try {
         if (pe == NULL) {

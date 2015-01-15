@@ -55,7 +55,7 @@ public:
 
 protected:
     static Stub* makeStub(PEFile *pe);
-    static bool setStubParams(Stub* stb, PEFile *pe, const offset_t newEntry, const offset_t dataRva, FunctionsMap &funcMap);
+    static bool setStubParams(Stub* stb, PEFile *pe, const offset_t newEntry, const offset_t dataRva, ImportsLookup &funcMap);
 
     static size_t calcDataStoreSize(FuncReplacements &funcRepl);
     static size_t calcNewImportsSize(PEFile *pe, size_t addedFuncCount);
@@ -66,11 +66,11 @@ protected:
 
     static ByteBuffer* createStub32(PEFile *peFile, offset_t stubRva, offset_t loadLib, offset_t getProcAddr);
 
-    static size_t countMissingImports(FunctionsMap &funcMap);
+    static size_t countMissingImports(ImportsLookup &funcMap);
     static bool makeThunksWriteable(PEFile *pe, FuncReplacements* m_funcRepl = NULL);
 
-    static bool makeStub(PEFile *pe, FunctionsMap &funcMap, FuncReplacements &funcRepl, const StubSettings &settings);
-    static bool addMissingFunctions(PEFile *pe, FunctionsMap &funcMap, bool tryReuse);
+    static bool makeStub(PEFile *pe, ImportsLookup &funcMap, FuncReplacements &funcRepl, const StubSettings &settings);
+    static bool addMissingFunctions(PEFile *pe, ImportsLookup &funcMap, bool tryReuse);
 
     static ImportEntryWrapper* addLibrary(PEFile *pe, QString name, offset_t &storageOffset);
     static bool addFunction(PEFile *pe, ImportEntryWrapper* libWr, ImportedFuncWrapper* func, const QString& name, offset_t &storageOffset);

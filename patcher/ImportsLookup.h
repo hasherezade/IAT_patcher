@@ -4,12 +4,12 @@
 
 typedef QMap<QString, offset_t> FuncToThunk;
 
-class FunctionsMap : public QObject
+class ImportsLookup : public QObject
 {
     Q_OBJECT
 
 public:
-    FunctionsMap() { }
+    ImportsLookup() { }
 
     void wrap(ImportDirWrapper* imports);
 
@@ -30,7 +30,7 @@ protected:
 
     QMap<QString, FuncToThunk> m_libs;
     FuncToThunk m_func;
+    QList<offset_t> m_Thunks;
 
     ImportDirWrapper* m_Imports;
-    QList<offset_t> m_Thunks;
 };
