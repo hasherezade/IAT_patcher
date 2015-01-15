@@ -104,7 +104,7 @@ size_t StubMaker::calcReplNamesSize(FuncReplacements &funcRepl)
 
     QList<offset_t>::Iterator itr;
     for (itr = thunks.begin(); itr != thunks.end(); itr++) {
-        FuncDesc &desc = funcRepl.getAt(*itr);
+        FuncDesc desc = funcRepl.getAt(*itr);
         requiredLen += desc.size();
         requiredLen += PADDING;
     }
