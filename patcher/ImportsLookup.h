@@ -15,7 +15,8 @@ public:
 
     QString thunkToLibName(offset_t thunk) { return (m_Imports) ? m_Imports->thunkToLibName(thunk) : ""; }
     QString thunkToFuncName(offset_t thunk) { return (m_Imports) ? m_Imports->thunkToFuncName(thunk) : ""; }
-
+    
+    bool hasThunk(const offset_t &thunk) { return  m_Thunks.contains(thunk); }
     bool hasLib(QString libName);
     bool hasFunc(QString funcName);
     offset_t findThunk(QString libName, QString funcName);

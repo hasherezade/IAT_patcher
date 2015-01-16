@@ -157,11 +157,20 @@ void ExeController::onImportReplacements(ExeHandler* exeHndl)
         "Config file (*.txt);;Config file (*.cfg);;All files (*.*)"
     );
     if (fileName.length() == 0) return;
-    
+
     size_t counter = exeHndl->m_Repl.load(fileName);
     if (counter == 0) {
         QMessageBox::warning(NULL, "Error!", "Cannot import!");
-    } else {
+        return;
+    }
+    
+    size_t invalidThunks = exeHndl->m_Repl.dropInvalidThunks(exeHndl->m_FuncMap);
+    counter -= invalidThunks;
+    if (invalidThunks > 0) {
+        QMessageBox::warning(NULL, "Warning!", "Found " + QString::number(invalidThunks) + " thunks that are not valid for this executable!");
+        return;
+    } 
+    if (counter > 0) {
         QString ending =  (counter > 1) ? "s":" ";
         QMessageBox::information(NULL, "Done!", "Imported: " + QString::number(counter) + " replacement" + ending);
     }

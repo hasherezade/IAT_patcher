@@ -9,23 +9,37 @@ bool FuncReplacements::defineReplacement(offset_t thunk, FuncDesc newFunc)
     return false;
 }
 
-bool FuncReplacements::_defineReplacement(offset_t thunk, FuncDesc newFunc)
+bool FuncReplacements::undefReplacement(offset_t thunk)
+{
+    if (_undefReplacement(thunk)) {
+        emit stateChanged();
+        return true;
+    }
+    return false;
+}
+
+bool FuncReplacements::_undefReplacement(offset_t thunk)
 {
     QMap<offset_t, FuncDesc>::Iterator found = m_replacements.find(thunk);
     bool exist = found != m_replacements.end();
-
-    if (newFunc.size() > 0) {
-        if ( FuncUtil::validateFuncDesc(newFunc) == false) {
-            return false;
-        }
-        m_replacements[thunk] = newFunc;
-        return true;
-    }
     if (exist) {
         m_replacements.erase(found);
         return true;
     }
     return false;
+}
+
+bool FuncReplacements::_defineReplacement(offset_t thunk, FuncDesc newFunc)
+{
+    QMap<offset_t, FuncDesc>::Iterator found = m_replacements.find(thunk);
+    if (newFunc.size() == 0) {
+        return _undefReplacement(thunk);
+    }
+    if (FuncUtil::validateFuncDesc(newFunc) == false) {
+        return false;
+    }
+    m_replacements[thunk] = newFunc;
+    return true;
 }
 
 FuncDesc FuncReplacements::getAt(offset_t thunk)
@@ -90,4 +104,21 @@ size_t FuncReplacements::save(QString &fileName)
     }
     outputFile.close(); 
     return counter;
+}
+
+size_t FuncReplacements::dropInvalidThunks(ImportsLookup &lookup)
+{
+    size_t invalidThunks = 0;
+    QList<offset_t>::iterator itr;
+    QList<offset_t> thunks = getThunks();
+    for (itr = thunks.begin(); itr != thunks.end(); itr++) {
+        if (lookup.hasThunk(*itr) == false) {
+            invalidThunks++;
+            this->_undefReplacement(*itr);
+        }
+    }
+    if (invalidThunks > 0) {
+        emit stateChanged();
+    }
+    return invalidThunks;
 }

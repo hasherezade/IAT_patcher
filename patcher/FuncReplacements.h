@@ -2,6 +2,8 @@
 #include <QFile>
 #include <bearparser.h>
 
+#include "ImportsLookup.h"
+
 typedef QString FuncDesc;
 
 class FuncUtil {
@@ -45,10 +47,12 @@ public:
     FuncReplacements() { }
     ~FuncReplacements() { }
 
-    size_t load(QString &fleName);
-    size_t save(QString &fleName);
+    size_t load(QString &fileName);
+    size_t save(QString &fileName);
+    size_t dropInvalidThunks(ImportsLookup &lookup);
 
     bool defineReplacement(offset_t thunk, FuncDesc newFunc);
+    bool undefReplacement(offset_t thunk);
 
     size_t size() { return m_replacements.size(); }
     QList<offset_t> getThunks() { return m_replacements.keys(); }
@@ -57,6 +61,7 @@ public:
     bool hasAt(offset_t thunk);
 
 protected:
+    bool _undefReplacement(offset_t thunk);
     bool _defineReplacement(offset_t thunk, FuncDesc newFunc);
 
     QMap<offset_t, FuncDesc> m_replacements;
