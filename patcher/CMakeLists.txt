@@ -26,6 +26,7 @@ set (hdrs
     InfoTableModel.h
     ImportsTableModel.h
     FileLoader.h
+    ExeHandlerLoader.h
     mainwindow.h
     resource.h
 )
@@ -46,6 +47,7 @@ set (srcs
     InfoTableModel.cpp
     ImportsTableModel.cpp
     FileLoader.cpp
+    ExeHandlerLoader.cpp
     mainwindow.cpp
     main.cpp
 )

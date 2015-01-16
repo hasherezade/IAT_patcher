@@ -4,7 +4,7 @@
 #include <QMessageBox>
 #include <stdexcept>
 
-#include "FileLoader.h"
+#include "ExeHandlerLoader.h"
 #include "ImportsTableModel.h"
 #include "StubMaker.h"
 
@@ -370,33 +370,9 @@ void MainWindow::on_saveButton_clicked()
     exeController.onSaveRequested(this->m_ExeSelected);
 }
 
-void MainWindow::onFileLoaded(AbstractByteBuffer* buf)
+void MainWindow::onLoadingFailed(QString fileName)
 {
-    if (buf == NULL) {
-        QMessageBox::warning(NULL,"Error!", "Cannot load the file!");
-        delete buf;
-        return;
-    }
-
-    ExeFactory::exe_type exeType = ExeFactory::findMatching(buf);
-    if (exeType == ExeFactory::NONE) {
-        QMessageBox::warning(NULL,"Cannot parse", "Type not supported\n");
-        delete buf;
-        return;
-    }
-    try {
-        printf("Parsing executable...\n");
-        Executable *exe = ExeFactory::build(buf, exeType);
-        ExeHandler *exeHndl = new ExeHandler(buf, exe);
-        if (exeHndl == NULL) throw CustomException("Cannot create handle!");
-        StubMaker::fillHookedInfo(exeHndl);
-        m_exes.addExe(exeHndl);
-
-    } catch (CustomException &e) {
-        QMessageBox::warning(NULL, "ERROR", e.getInfo());
-        return;
-    }
-	return;
+    QMessageBox::warning(NULL,"Error!", "Cannot load the file:" + fileName);
 }
 
 void MainWindow::onLoaderThreadFinished()
@@ -428,12 +404,13 @@ bool MainWindow::parse(QString &fileName)
         FileView fileView(fileName, maxMapSize);
         ExeFactory::exe_type exeType = ExeFactory::findMatching(&fileView);
         if (exeType == ExeFactory::NONE) {
-            QMessageBox::warning(NULL,"Cannot parse", "Type not supported\n");
+            QMessageBox::warning(NULL,"Cannot parse!", "Cannot parse the file: \n"+fileName+"\n\nType not supported.");
             return false;
         }
 
-        FileLoader *loader = new FileLoader(fileName);
-		QObject::connect(loader, SIGNAL( loaded(AbstractByteBuffer*) ), this, SLOT( onFileLoaded(AbstractByteBuffer*) ) );
+        ExeHandlerLoader *loader = new ExeHandlerLoader(fileName);
+        QObject::connect(loader, SIGNAL( loaded(ExeHandler*) ), &m_exes, SLOT( addExe(ExeHandler*) ) );
+		QObject::connect(loader, SIGNAL( loadingFailed(QString ) ), this, SLOT( onLoadingFailed(QString ) ) );
 		QObject::connect(loader, SIGNAL(finished()), this, SLOT( onLoaderThreadFinished() ) );
 		//printf("Thread started...\n");
         m_LoadersCount.inc();

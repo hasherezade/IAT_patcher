@@ -13,7 +13,7 @@
 #include "InfoTableModel.h"
 #include "ExeController.h"
 
-class ThreadSaveCounter : public QObject
+class ThreadCounter : public QObject
 {
     Q_OBJECT
 
@@ -21,7 +21,7 @@ signals:
     void counterChanged();
 
 public:
-    ThreadSaveCounter() { counter = 0; }
+    ThreadCounter() { counter = 0; }
 
     void inc()
     {
@@ -78,7 +78,7 @@ private slots:
 
     void takeAction();
     void loadingStatusChanged();
-    void onFileLoaded(AbstractByteBuffer* buf);
+    void onLoadingFailed(QString fileName);
 
     void selectExe(ExeHandler* exe) 
     { 
@@ -129,7 +129,7 @@ private:
 
     ImportsTableModel *impModel;
     InfoTableModel *infoModel;
-    ThreadSaveCounter m_LoadersCount;
+    ThreadCounter m_LoadersCount;
 
     Executables m_exes;
     ExeHandler* m_ExeSelected;
