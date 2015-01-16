@@ -13,8 +13,8 @@ public:
 
     void wrap(ImportDirWrapper* imports);
 
-    QString thunkToLibName(offset_t thunk) { return (m_Imports) ? m_Imports->thunkToLibName(thunk) : NULL; }
-    QString thunkToFuncName(offset_t thunk) { return (m_Imports) ? m_Imports->thunkToFuncName(thunk) : NULL; }
+    QString thunkToLibName(offset_t thunk) { return (m_Imports) ? m_Imports->thunkToLibName(thunk) : ""; }
+    QString thunkToFuncName(offset_t thunk) { return (m_Imports) ? m_Imports->thunkToFuncName(thunk) : ""; }
 
     bool hasLib(QString libName);
     bool hasFunc(QString funcName);
