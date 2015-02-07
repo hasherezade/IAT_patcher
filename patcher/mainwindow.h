@@ -113,7 +113,7 @@ private:
     void clear();
     bool parse(QString &fileName);
 
-    void addExeAction(QMenu *customMenu, QString text, ExeController::EXE_ACTION a);
+    QAction* addExeAction(QMenu *customMenu, QString text, ExeController::EXE_ACTION a);
     void makeCustomMenu();
     void makeFunctionsMenu();
     void makeFileMenu();
