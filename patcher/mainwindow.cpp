@@ -4,7 +4,7 @@
 #include <QMessageBox>
 #include <stdexcept>
 
-#include "FileLoader.h"
+#include "ExeHandlerLoader.h"
 #include "ImportsTableModel.h"
 #include "StubMaker.h"
 
@@ -211,25 +211,26 @@ void MainWindow::on_hookButton_clicked()
     emit hookRequested(this->m_ExeSelected);
 }
 
-void MainWindow::addExeAction(QMenu *customMenu, QString text, ExeController::EXE_ACTION a)
+QAction* MainWindow::addExeAction(QMenu *customMenu, QString text, ExeController::EXE_ACTION a)
 {
-    QAction *hook = new QAction(text, customMenu);
-    hook->setData(a);
-    customMenu->addAction(hook);
-    connect(hook, SIGNAL(triggered()), this, SLOT(takeAction()));
+    QAction *action = new QAction(text, customMenu);
+    action->setData(a);
+    customMenu->addAction(action);
+    connect(action, SIGNAL(triggered()), this, SLOT(takeAction()));
+    return action;
 }
 
 void MainWindow::makeCustomMenu()
 {
     this->customMenu = new QMenu(this);
 
-    addExeAction(customMenu, "Hook", ExeController::ACTION_HOOK);
-    addExeAction(customMenu, "Save as...", ExeController::ACTION_SAVE);
-    addExeAction(customMenu, "Reload", ExeController::ACTION_RELOAD);
-    addExeAction(customMenu, "Unload", ExeController::ACTION_UNLOAD);
+    addExeAction(customMenu, "Hook", ExeController::ACTION_HOOK)->setIcon(QIcon(":/icons/apply.ico"));
+    addExeAction(customMenu, "Save as...", ExeController::ACTION_SAVE)->setIcon(QIcon(":/icons/save_black.ico"));
+    addExeAction(customMenu, "Reload", ExeController::ACTION_RELOAD)->setIcon(QIcon(":/icons/reload.ico"));
+    addExeAction(customMenu, "Unload", ExeController::ACTION_UNLOAD)->setIcon(QIcon(":icons/Delete.ico"));
     customMenu->addSeparator();
-    addExeAction(customMenu, "Export replacements", ExeController::ACTION_EXPORT_REPL);
-    addExeAction(customMenu, "Import replacements", ExeController::ACTION_IMPORT_REPL);
+    addExeAction(customMenu, "Export replacements", ExeController::ACTION_EXPORT_REPL)->setIcon(QIcon(":icons/export.ico"));
+    addExeAction(customMenu, "Import replacements", ExeController::ACTION_IMPORT_REPL)->setIcon(QIcon(":icons/import.ico"));
 }
 
 void MainWindow::makeFunctionsMenu()
@@ -237,6 +238,7 @@ void MainWindow::makeFunctionsMenu()
     this->functionsMenu = new QMenu(this);
 
     QAction *settingsAction = new QAction("Define replacement", functionsMenu);
+    settingsAction->setIcon(QIcon(":icons/edit.ico"));
     connect(settingsAction, SIGNAL(triggered()), this->m_replacementsDialog, SLOT(show()));
     functionsMenu->addAction(settingsAction);
 }
@@ -247,11 +249,12 @@ void MainWindow::makeFileMenu()
     QMenu *menu = this->m_ui.menuFile;
 
     QAction *openAction = new QAction("Open executable", menu);
+    openAction->setIcon(QIcon(":/icons/Add.ico"));
     connect(openAction, SIGNAL(triggered()), this, SLOT(openExe()));
     menu->addAction(openAction);
 
-    addExeAction(menu, "Hook selected", ExeController::ACTION_HOOK);
-    addExeAction(menu, "Save selected as...", ExeController::ACTION_SAVE);
+    addExeAction(menu, "Hook selected", ExeController::ACTION_HOOK)->setIcon(QIcon(":/icons/apply.ico"));
+    addExeAction(menu, "Save selected as...", ExeController::ACTION_SAVE)->setIcon(QIcon(":/icons/save_black.ico"));
 }
 
 void MainWindow::customMenuRequested(QPoint pos)
@@ -370,33 +373,9 @@ void MainWindow::on_saveButton_clicked()
     exeController.onSaveRequested(this->m_ExeSelected);
 }
 
-void MainWindow::onFileLoaded(AbstractByteBuffer* buf)
+void MainWindow::onLoadingFailed(QString fileName)
 {
-    if (buf == NULL) {
-        QMessageBox::warning(NULL,"Error!", "Cannot load the file!");
-        delete buf;
-        return;
-    }
-
-    ExeFactory::exe_type exeType = ExeFactory::findMatching(buf);
-    if (exeType == ExeFactory::NONE) {
-        QMessageBox::warning(NULL,"Cannot parse", "Type not supported\n");
-        delete buf;
-        return;
-    }
-    try {
-        printf("Parsing executable...\n");
-        Executable *exe = ExeFactory::build(buf, exeType);
-        ExeHandler *exeHndl = new ExeHandler(buf, exe);
-        if (exeHndl == NULL) throw CustomException("Cannot create handle!");
-        StubMaker::fillHookedInfo(exeHndl);
-        m_exes.addExe(exeHndl);
-
-    } catch (CustomException &e) {
-        QMessageBox::warning(NULL, "ERROR", e.getInfo());
-        return;
-    }
-	return;
+    QMessageBox::warning(NULL,"Error!", "Cannot load the file:" + fileName);
 }
 
 void MainWindow::onLoaderThreadFinished()
@@ -428,12 +407,13 @@ bool MainWindow::parse(QString &fileName)
         FileView fileView(fileName, maxMapSize);
         ExeFactory::exe_type exeType = ExeFactory::findMatching(&fileView);
         if (exeType == ExeFactory::NONE) {
-            QMessageBox::warning(NULL,"Cannot parse", "Type not supported\n");
+            QMessageBox::warning(NULL,"Cannot parse!", "Cannot parse the file: \n"+fileName+"\n\nType not supported.");
             return false;
         }
 
-        FileLoader *loader = new FileLoader(fileName);
-		QObject::connect(loader, SIGNAL( loaded(AbstractByteBuffer*) ), this, SLOT( onFileLoaded(AbstractByteBuffer*) ) );
+        ExeHandlerLoader *loader = new ExeHandlerLoader(fileName);
+        QObject::connect(loader, SIGNAL( loaded(ExeHandler*) ), &m_exes, SLOT( addExe(ExeHandler*) ) );
+		QObject::connect(loader, SIGNAL( loadingFailed(QString ) ), this, SLOT( onLoadingFailed(QString ) ) );
 		QObject::connect(loader, SIGNAL(finished()), this, SLOT( onLoaderThreadFinished() ) );
 		//printf("Thread started...\n");
         m_LoadersCount.inc();

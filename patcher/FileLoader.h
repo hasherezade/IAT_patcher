@@ -3,6 +3,7 @@
 #include <QtGui>
 #include <QFile>
 #include <bearparser.h>
+#include <stdexcept>
 
 class FileLoader : public QThread
 {
@@ -13,14 +14,17 @@ public:
 
 signals:
     void loaded(AbstractByteBuffer *buffer);
+    void loadingFailed(QString fileName);
+
+protected:
+    void run();
+    virtual bool parse(QString &fileName);
+
+    QString m_FileName;
+    bool m_Status;
+
 
 private:
-    void run();
-    bool parse(QString &fileName);
-
-    bool m_Status;
-    QString m_FileName;
     AbstractByteBuffer *m_Buffer;
     QMutex m_arrMutex;
 };
- 

@@ -1,28 +1,41 @@
 #include "Executables.h"
+#include "StubMaker.h"
 
-ExeHandler* Executables::at(size_t index) const
+size_t Executables::size() { 
+    QMutexLocker lock(&m_listMutex); //LOCKER 
+    return m_Exes.size(); 
+}
+
+ExeHandler* Executables::at(size_t index)
 {
-    if (index >= size()) return NULL;
+    QMutexLocker lock(&m_listMutex); //LOCKER
+    if (index >= m_Exes.size()) return NULL;
     return m_Exes.at(index);
 }
 
-void Executables::addExe(ExeHandler *exe)
+bool Executables::_addExe(ExeHandler *exeHndl)
 {
-    if (exe == NULL) return;
+    if (exeHndl == NULL) return false;
 
-    m_Exes.push_back(exe);
-    connect(exe, SIGNAL(stateChanged()), this, SLOT(onChildStateChanged()));
+    { //start locked scope
+        QMutexLocker lock(&m_listMutex); //LOCKER
+        m_Exes.push_back(exeHndl);
+    } //end locked scope
 
-    emit exeListChanged();
+    StubMaker::fillHookedInfo(exeHndl);
+    connect(exeHndl, SIGNAL(stateChanged()), this, SLOT(onChildStateChanged()));
+    return true;
 }
 
- void Executables::removeExe(ExeHandler *exe)
+bool  Executables::_removeExe(ExeHandler *exe)
  {
+    QMutexLocker lock(&m_listMutex); //LOCKER
     size_t indx = m_Exes.indexOf(exe);
     if (indx != -1) {
         m_Exes.removeAt(indx);
-        emit exeListChanged();
+        return true;
     }
+    return false;
  }
 
 QStringList Executables::listFiles()
@@ -31,6 +44,7 @@ QStringList Executables::listFiles()
     QList<ExeHandler*>::iterator itr;
     QString fileName = "";
 
+    QMutexLocker lock(&m_listMutex); //LOCKER
     for (itr = m_Exes.begin(); itr != m_Exes.end(); itr++) {
         ExeHandler *exeHndl = (*itr);
         if (exeHndl->getExe() != NULL) {
@@ -41,13 +55,13 @@ QStringList Executables::listFiles()
     return fileNames;
  }
 
-void Executables::clear()
+void Executables::_clear()
 {
+    QMutexLocker lock(&m_listMutex); //LOCKER
     QList<ExeHandler*>::iterator itr;
     for (itr = m_Exes.begin(); itr != m_Exes.end(); itr++) {
         ExeHandler *exe = (*itr);
         delete exe;
     }
     m_Exes.clear();
-    emit exeListChanged();
 }

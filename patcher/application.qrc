@@ -1,10 +1,16 @@
 <RCC>
   <qresource prefix="/">
-    <file>icons/open2.ico</file>
+    <file>icons/Add.ico</file>
     <file>icons/DeleteAll.ico</file>
+    <file>icons/Delete.ico</file>
     <file>icons/reload.ico</file>
     <file>icons/app32.ico</file>
     <file>icons/app64.ico</file>
+    <file>icons/apply.ico</file>
+    <file>icons/save_black.ico</file>
+    <file>icons/edit.ico</file>
+    <file>icons/import.ico</file>
+    <file>icons/export.ico</file>
     <file>favicon.ico</file>
   </qresource>
 </RCC>
