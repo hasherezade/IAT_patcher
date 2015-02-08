@@ -59,6 +59,8 @@ protected slots:
     void onChildStateChanged() { emit stateChanged(); }
 
 protected:
+    void setUnappliedState(bool flag) { hasUnapplied = flag; }
+
     AbstractByteBuffer *m_Buf;
     Executable* m_Exe;
 

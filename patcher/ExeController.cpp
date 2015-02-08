@@ -173,5 +173,6 @@ void ExeController::onImportReplacements(ExeHandler* exeHndl)
     if (counter > 0) {
         QString ending =  (counter > 1) ? "s":" ";
         QMessageBox::information(NULL, "Done!", "Imported: " + QString::number(counter) + " replacement" + ending);
+        if (counter != 0)  exeHndl->setUnappliedState(true);
     }
 }
