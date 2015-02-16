@@ -7,9 +7,7 @@ bool ExeHandlerLoader::parse(QString &fileName)
     try {
         const bufsize_t MINBUF = 0x200;
         AbstractByteBuffer *buf = new FileBuffer(fileName, MINBUF);
-
         if (buf == NULL) {
-            delete buf;
             return false;
         }
         ExeFactory::exe_type exeType = ExeFactory::findMatching(buf);

@@ -24,7 +24,7 @@
    <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>IAT Patcher v 0.3.4</string>
+   <string>IAT Patcher v 0.3.4-dev</string>
   </property>
   <property name="windowIcon">
    <iconset resource="application.qrc">

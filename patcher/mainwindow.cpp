@@ -12,7 +12,8 @@ QString  SITE_LINK = "http://hasherezade.net/IAT_patcher";
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), m_replacementsDialog(NULL),
-    infoModel(NULL), m_ExeSelected(NULL), customMenu(NULL), functionsMenu(NULL)
+    infoModel(NULL), m_libsModel(NULL), m_functModel(NULL),
+    m_ExeSelected(NULL), customMenu(NULL), functionsMenu(NULL)
 {
     m_ui.setupUi(this);
     initReplacementsDialog();
@@ -41,7 +42,6 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ui.outputTable->setSelectionMode(QAbstractItemView::SingleSelection);
 	m_ui.outputTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-
     m_ui.statusBar->addPermanentWidget(&urlLabel);
     urlLabel.setTextFormat(Qt::RichText);
 	urlLabel.setTextInteractionFlags(Qt::TextBrowserInteraction);
@@ -51,7 +51,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->setAcceptDrops(true);
 
     this->impModel = new ImportsTableModel(m_ui.outputTable);
-
     this->m2 = new QSortFilterProxyModel(this);
     m2->setDynamicSortFilter(true);
     m2->setSourceModel(impModel);
@@ -61,7 +60,6 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ui.importsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_ui.importsTable->setSelectionMode(QAbstractItemView::SingleSelection);
     m_ui.importsTable->horizontalHeader()->setResizeMode(2, QHeaderView::Stretch);
-
 
     connect( m_ui.filterLibEdit, SIGNAL( textChanged (const QString &)), this, SLOT( filterLibs(const QString &)) );
     connect( m_ui.filterProcEdit, SIGNAL( textChanged (const QString &)), this, SLOT( filterFuncs(const QString &)) );
@@ -77,15 +75,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect( this, SIGNAL( exeUpdated(ExeHandler*)), impModel, SLOT( setExecutable(ExeHandler*) ) );
     connect( this, SIGNAL( exeUpdated(ExeHandler*)), infoModel, SLOT( onExeListChanged() ) );
-    connect( &this->exeController, SIGNAL( exeUpdated(ExeHandler*)), this, SLOT( refreshExeView(ExeHandler*) ) );
+    connect( &this->exeController, SIGNAL( exeUpdated(ExeHandler*)), this, SLOT( refreshExeView(ExeHandler*)) );
 
-    connect( &this->exeController, SIGNAL( exeUpdated(ExeHandler*)), infoModel, SLOT( onExeListChanged() ) );
+    connect( &this->exeController, SIGNAL(exeUpdated(ExeHandler*)), infoModel, SLOT(onExeListChanged()) );
 
     connect(&m_LoadersCount, SIGNAL(counterChanged()), this, SLOT(loadingStatusChanged() ));
     connect(this, SIGNAL(hookRequested(ExeHandler* )), this, SLOT(onHookRequested(ExeHandler* ) ));
-    connect(infoModel, SIGNAL(hookRequested(ExeHandler* )), this, SLOT(onHookRequested(ExeHandler* ) ));
+    connect(infoModel, SIGNAL(hookRequested(ExeHandler* )), this, SLOT(onHookRequested(ExeHandler* )) );
 
     connect(this, SIGNAL(thunkSelected(offset_t)), this, SLOT(setThunkSelected(offset_t)) );
+    connect(this, SIGNAL(parseLibrary(QString&)), &m_libParser, SLOT(on_parseLibrary(QString&)) );
+    connect(&m_libParser, SIGNAL(infoCreated(LibraryInfo*)),  &m_libInfos, SLOT(addElement(LibraryInfo *)) );
 }
 
 MainWindow::~MainWindow()
@@ -101,6 +101,17 @@ void MainWindow::initReplacementsDialog()
 
     connect(this->m_uiReplacements->okCancel_buttons, SIGNAL(rejected()), this->m_replacementsDialog, SLOT(hide()));
     connect(this->m_uiReplacements->okCancel_buttons, SIGNAL(accepted()), this, SLOT(setReplacement()));
+    connect(m_uiReplacements->addLibraryButton, SIGNAL(clicked()), this, SLOT(openLibrary()));
+
+    m_libsModel = new LibsModel(this->m_uiReplacements->libraryCombo);
+    m_functModel = new FunctionsModel(this->m_uiReplacements->functionCombo);
+
+    this->m_uiReplacements->libraryCombo->setModel(m_libsModel);
+    this->m_uiReplacements->functionCombo->setModel(m_functModel);
+    m_libsModel->setLibraries(&m_libInfos);
+    m_functModel->setLibraries(&m_libInfos);
+
+    connect(m_uiReplacements->libraryCombo, SIGNAL(currentIndexChanged(int)), m_functModel, SLOT(on_currentndexChanged(int)));
 }
 
 void MainWindow::filterLibs(const QString &str)
@@ -169,6 +180,20 @@ void MainWindow::openExe()
 
     if (fileName != "") {
         this->parse(fileName);
+    }
+}
+
+void MainWindow::openLibrary()
+{
+    QString fileName = QFileDialog::getOpenFileName(
+        this,
+        tr("Open executable"),
+        QDir::homePath(),
+        "DLL Files (*.dll);;All files (*.*)"
+        );
+
+    if (fileName != "") {
+        emit parseLibrary(fileName);
     }
 }
 
@@ -304,20 +329,31 @@ void MainWindow::setThunkSelected(offset_t thunk)
 
 void MainWindow::setReplacement()
 {
-    QString libName = this->m_uiReplacements->libraryEdit->text();
-    QString funcName = this->m_uiReplacements->functionEdit->text();
+    QString libName, funcName;
+
+    int tabNum = this->m_uiReplacements->tabWidget_2->currentIndex();
+    if (tabNum == 0){
+        libName = this->m_uiReplacements->libraryEdit->text();
+        funcName = this->m_uiReplacements->functionEdit->text();
+    } else if (tabNum == 1){
+        libName = this->m_uiReplacements->libraryCombo->currentText();
+        funcName = this->m_uiReplacements->functionCombo->currentText();
+    }
+
     QString substName = "";
 
     if (libName.length() != 0 && funcName.length() != 0) {
         substName = libName + "." + funcName;
     }
-    if (this->m_ExeSelected->m_Repl.getAt(m_ThunkSelected) == substName) return;
-
+    if (this->m_ExeSelected->m_Repl.getAt(m_ThunkSelected) == substName) {
+        this->m_replacementsDialog->hide();
+        return;
+    }
     if (this->m_ExeSelected->defineReplacement(m_ThunkSelected, substName) == false) {
         QMessageBox::warning(NULL, "Error", "Invalid replacement definition!");
-    } else {
-        this->m_replacementsDialog->hide();
+        return;
     }
+    this->m_replacementsDialog->hide();
 }
 
 

@@ -13,6 +13,10 @@
 #include "InfoTableModel.h"
 #include "ExeController.h"
 
+#include "dllparse/LibraryParser.h"
+#include "dllparse/LibsModel.h"
+#include "dllparse/FunctionsModel.h"
+
 class ThreadCounter : public QObject
 {
     Q_OBJECT
@@ -59,6 +63,7 @@ signals:
     void exeSelected(ExeHandler* exe);
     void exeUpdated(ExeHandler* exe);
     void hookRequested(ExeHandler* exe);
+    void parseLibrary(QString &path);
 
     void thunkSelected(offset_t thunk);
 
@@ -70,7 +75,6 @@ protected:
 	/* events */
 	void dragEnterEvent(QDragEnterEvent* ev) { ev->accept(); }
     void dropEvent(QDropEvent* ev);
-
 
 private slots:
     void filterLibs(const QString &str);
@@ -97,6 +101,7 @@ private slots:
     void onLoaderThreadFinished();
     void rowChangedSlot(QModelIndex, QModelIndex);
     void openExe();
+    void openLibrary();
     //---
     void on_pushButton_clicked();
     void on_reloadButton_clicked();
@@ -129,14 +134,19 @@ private:
 
     ImportsTableModel *impModel;
     InfoTableModel *infoModel;
+    LibsModel *m_libsModel;
+    FunctionsModel *m_functModel;
+
     ThreadCounter m_LoadersCount;
 
     Executables m_exes;
+    LibInfos m_libInfos;
     ExeHandler* m_ExeSelected;
     offset_t m_ThunkSelected;
     QLabel urlLabel;
 
     ExeController exeController;
+    LibraryParser m_libParser;
 };
 
 
