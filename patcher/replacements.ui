@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>410</width>
-    <height>309</height>
+    <height>337</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -50,7 +50,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>270</y>
+     <y>300</y>
      <width>381</width>
      <height>32</height>
     </rect>
@@ -150,7 +150,7 @@
      <x>10</x>
      <y>110</y>
      <width>391</width>
-     <height>161</height>
+     <height>191</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -170,13 +170,13 @@
    </property>
    <layout class="QGridLayout" name="gridLayout_4">
     <property name="leftMargin">
-     <number>9</number>
-    </property>
-    <property name="topMargin">
      <number>5</number>
     </property>
+    <property name="topMargin">
+     <number>20</number>
+    </property>
     <property name="rightMargin">
-     <number>9</number>
+     <number>5</number>
     </property>
     <property name="bottomMargin">
      <number>5</number>
