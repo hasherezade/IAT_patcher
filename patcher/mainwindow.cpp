@@ -331,11 +331,11 @@ void MainWindow::setReplacement()
 {
     QString libName, funcName;
 
-    int tabNum = this->m_uiReplacements->tabWidget_2->currentIndex();
-    if (tabNum == 0){
+    int tabNum = this->m_uiReplacements->tabWidget->currentIndex();
+    if (tabNum == 0) {
         libName = this->m_uiReplacements->libraryEdit->text();
         funcName = this->m_uiReplacements->functionEdit->text();
-    } else if (tabNum == 1){
+    } else if (tabNum == 1) {
         libName = this->m_uiReplacements->libraryCombo->currentText();
         funcName = this->m_uiReplacements->functionCombo->currentText();
     }
