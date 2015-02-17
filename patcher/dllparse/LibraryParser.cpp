@@ -39,10 +39,9 @@ void LibraryParser::makeLibraryInfo(Executable* exe)
     LibraryInfo *info = new LibraryInfo(exe->getFileName());
     info->fileName = exports->getLibraryName();
     for(int i = 0; i < entriesCnt; i++) {
-        ExeNodeWrapper* entry = exports->getEntryAt(i);
+        ExportEntryWrapper* entry = dynamic_cast<ExportEntryWrapper*>(exports->getEntryAt(i));
         if (!entry) continue;
-        QString name = entry->getName();
-        info->names << name;
+        info->functions.append(FunctionInfo(entry->getName(), entry->isByOrdinal()));
     }
     emit infoCreated(info);
 }

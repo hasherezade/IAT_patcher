@@ -2,6 +2,19 @@
 #include <QFile>
 #include <bearparser.h>
 
+class FunctionInfo
+{
+public:
+    FunctionInfo(QString v_name, bool v_isByOrdinal=false)
+        : name(v_name), isByOrdinal(v_isByOrdinal) {}
+    virtual ~FunctionInfo() {}
+
+protected:
+    QString name;
+    bool isByOrdinal;
+friend class LibraryInfo;
+};
+
 class LibraryInfo : public QObject
 {
     Q_OBJECT
@@ -12,15 +25,18 @@ signals:
 public:
     LibraryInfo(QString filename, QObject* parent = NULL) 
         : QObject(parent), fileName(filename) {}
-    ~LibraryInfo(){}
+    ~LibraryInfo() {}
+
     QString getFileName() { return fileName; }
+    const QString getFuncNameAt(int i) { if (i > functions.size()) return ""; return functions.at(i).name; }
+    const bool isFunctionNamed(int i) { if (i > functions.size()) return false; return !(functions.at(i).isByOrdinal); }
+    const size_t getFunctionsCount() { return functions.size(); }
 
 protected:
     QString fileName;
-    QStringList names;
+    QList<FunctionInfo> functions;
 
 friend class LibraryParser;
-friend class FunctionsModel;
 };
 
 class LibInfos : public QObject
