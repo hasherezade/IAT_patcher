@@ -96,7 +96,6 @@ void MainWindow::initReplacementsDialog()
     m_replacementsDialog = new ReplacementsDialog(this);
     connect(m_replacementsDialog, SIGNAL(setReplacement(QString, QString)), this, SLOT(updateReplacement(QString, QString)) );
     connect(this, SIGNAL(replacementAccepted()), m_replacementsDialog, SLOT(hide()));
-    m_replacementsDialog->setAcceptDrops(true);
 }
 
 void MainWindow::filterLibs(const QString &str)

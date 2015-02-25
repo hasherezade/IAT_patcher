@@ -5,6 +5,7 @@ ReplacementsDialog::ReplacementsDialog(QWidget *parent)
 {
     this->m_uiReplacements = new Ui_Replacements();
     this->m_uiReplacements->setupUi(this);
+    setAcceptDrops(true);
 
     m_libsModel = new LibsModel(this->m_uiReplacements->libraryCombo);
     m_functModel = new FunctionsModel(this->m_uiReplacements->functionCombo);
@@ -21,7 +22,7 @@ ReplacementsDialog::ReplacementsDialog(QWidget *parent)
 
     connect(m_uiReplacements->libraryCombo, SIGNAL(currentIndexChanged(int)), m_functModel, SLOT(on_currentndexChanged(int)));
     connect(this, SIGNAL(parseLibrary(QString&)), &m_libParser, SLOT(on_parseLibrary(QString&)) );
-    connect(&m_libParser, SIGNAL(infoCreated(LibraryInfo*)),  &m_libInfos, SLOT(addElement(LibraryInfo *)) );
+    connect(&m_libParser, SIGNAL(infoCreated(LibraryInfo*)), &m_libInfos, SLOT(addElement(LibraryInfo *)) );
 }
 
 void ReplacementsDialog::displayFuncToReplace(offset_t thunk, QString libName, QString funcName)
@@ -46,28 +47,28 @@ void ReplacementsDialog::displayReplacement(FuncDesc &desc)
 
 QString ReplacementsDialog::getLibName()
 {
-    QString libName;
-
     int tabNum = this->m_uiReplacements->tabWidget->currentIndex();
-    if (tabNum == 0) {
-        libName = this->m_uiReplacements->libraryEdit->text();
-    } else if (tabNum == 1) {
-        libName = this->m_uiReplacements->libraryCombo->currentText();
+
+    switch (tabNum) {
+        case TAB_EDIT :
+            return this->m_uiReplacements->libraryEdit->text();
+        case TAB_CHOSE :
+            return this->m_uiReplacements->libraryCombo->currentText();
     }
-    return libName;
+    return "";
 }
 
 QString ReplacementsDialog::getFuncName()
 {
-    QString funcName;
-
     int tabNum = this->m_uiReplacements->tabWidget->currentIndex();
-    if (tabNum == 0) {
-        funcName = this->m_uiReplacements->functionEdit->text();
-    } else if (tabNum == 1) {
-        funcName = this->m_uiReplacements->functionCombo->currentText();
+
+    switch (tabNum) {
+        case TAB_EDIT :
+            return this->m_uiReplacements->functionEdit->text();
+        case TAB_CHOSE :
+            return this->m_uiReplacements->functionCombo->currentText();
     }
-    return funcName;
+    return "";
 }
 
 void ReplacementsDialog::openLibrary()
@@ -87,4 +88,25 @@ void ReplacementsDialog::openLibrary()
 void ReplacementsDialog::requestReplacement()
 {
     emit setReplacement(getLibName(), getFuncName());
+}
+
+void ReplacementsDialog::dragEnterEvent(QDragEnterEvent *event)
+{
+    event->accept();
+}
+
+void ReplacementsDialog::dropEvent(QDropEvent* ev)
+{
+    this->m_uiReplacements->tabWidget->setCurrentIndex(TAB_CHOSE);
+    QList<QUrl> urls = ev->mimeData()->urls();
+    QList<QUrl>::Iterator urlItr;
+    QCursor cur = this->cursor();
+    this->setCursor(Qt::BusyCursor);
+
+    for (urlItr = urls.begin() ; urlItr != urls.end(); urlItr++) {
+        QString fileName = urlItr->toLocalFile();
+        if (fileName == "") continue;
+        emit parseLibrary(fileName);
+    }
+    this->setCursor(cur);
 }

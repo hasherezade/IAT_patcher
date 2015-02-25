@@ -20,6 +20,13 @@ signals:
     void parseLibrary(QString &path);
 
 public:
+    enum TABS
+    {
+        TAB_EDIT = 0,
+        TAB_CHOSE = 1,
+        COUNT_TABS
+    };
+
     explicit ReplacementsDialog(QWidget *parent = 0);
     ~ReplacementsDialog() { }
 
@@ -29,6 +36,10 @@ public:
 
     QString getLibName();
     QString getFuncName();
+
+    /* events */
+    void dragEnterEvent(QDragEnterEvent *ev);
+    void dropEvent(QDropEvent* ev);
 
 private slots:
     void requestReplacement();
