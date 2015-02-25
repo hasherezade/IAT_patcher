@@ -24,15 +24,22 @@ signals:
 
 public:
     LibraryInfo(QString filename, QObject* parent = NULL) 
-        : QObject(parent), fileName(filename) {}
+        : QObject(parent), fileName(filename)
+    {
+        QFileInfo inputInfo(filename);
+        libName = inputInfo.fileName();
+    }
+
     ~LibraryInfo() {}
 
     QString getFileName() { return fileName; }
+    QString getLibName() { return libName; }
     const QString getFuncNameAt(int i) { if (i > functions.size()) return ""; return functions.at(i).name; }
     const bool isFunctionNamed(int i) { if (i > functions.size()) return false; return !(functions.at(i).isByOrdinal); }
     const size_t getFunctionsCount() { return functions.size(); }
 
 protected:
+    QString libName;
     QString fileName;
     QList<FunctionInfo> functions;
 
@@ -55,7 +62,7 @@ public:
     size_t size();
     LibraryInfo* at(size_t index);
 
-    QStringList listFiles();
+    QStringList listLibs();
 
 protected slots:
     void onChildStateChanged() { emit listChanged(); }
@@ -66,5 +73,6 @@ private:
     void _clear();
 
     QList<LibraryInfo *> m_Libs;
+    QMap<QString, LibraryInfo*> m_NameToLibInfo;
     QMutex m_listMutex;
 };

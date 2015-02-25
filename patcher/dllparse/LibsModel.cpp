@@ -37,7 +37,8 @@ QVariant LibsModel::data(const QModelIndex &index, int role) const
     LibraryInfo *info = m_LibInfos->at(elNum);
 	if (info == NULL) return QVariant();
     switch (role) {
-        case Qt::DisplayRole: return info->getFileName();
+        case Qt::DisplayRole: return info->getLibName();
+        case Qt::ToolTipRole: return info->getFileName();
         case Qt::UserRole : return elNum;
     }
     return QVariant();

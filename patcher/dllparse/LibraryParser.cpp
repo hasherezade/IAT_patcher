@@ -12,7 +12,7 @@ void LibraryParser::on_parseLibrary(QString& fileName)
         }
 
         Executable *exe = ExeFactory::build(buf, exeType);
-        makeLibraryInfo(exe);
+        makeLibraryInfo(exe, fileName);
         delete exe;
         delete buf;
     } catch (CustomException &e) {
@@ -27,7 +27,7 @@ ExportDirWrapper* LibraryParser::getExports(Executable* exe)
     return dynamic_cast<ExportDirWrapper*>(mappedExe->getWrapper(PEFile::WR_DIR_ENTRY + pe::DIR_EXPORT));
 }
 
-void LibraryParser::makeLibraryInfo(Executable* exe)
+void LibraryParser::makeLibraryInfo(Executable* exe, QString fileName)
 {
     if (!exe) return;
     ExportDirWrapper* exports = getExports(exe);
@@ -36,8 +36,7 @@ void LibraryParser::makeLibraryInfo(Executable* exe)
     if (entriesCnt == 0) return;
     printf("entriesCnt %d\n", entriesCnt);
 
-    LibraryInfo *info = new LibraryInfo(exe->getFileName());
-    info->fileName = exports->getLibraryName();
+    LibraryInfo *info = new LibraryInfo(fileName);
     for(int i = 0; i < entriesCnt; i++) {
         ExportEntryWrapper* entry = dynamic_cast<ExportEntryWrapper*>(exports->getEntryAt(i));
         if (!entry) continue;

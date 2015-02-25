@@ -14,7 +14,7 @@ public:
         : QObject(parent) {}
     ~LibraryParser(){}
 
-    void makeLibraryInfo(Executable* exe);
+    void makeLibraryInfo(Executable* exe, QString fileName);
     ExportDirWrapper* getExports(Executable* exe);
 
 public slots:

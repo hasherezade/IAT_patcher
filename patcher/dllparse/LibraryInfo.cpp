@@ -18,10 +18,17 @@ bool LibInfos::_addElement(LibraryInfo *hndl)
 
     { //start locked scope
         QMutexLocker lock(&m_listMutex); //LOCKER
+        const QString fileName = hndl->getFileName();
+        if (m_NameToLibInfo.contains(fileName)) {
+            //already exist, reload...
+            LibraryInfo *info = m_NameToLibInfo[fileName];
+            m_Libs.removeOne(info);
+            delete info;
+        }
         m_Libs.push_back(hndl);
+        m_NameToLibInfo[fileName] = hndl;
     } //end locked scope
     connect(hndl, SIGNAL(stateChanged()), this, SLOT(onChildStateChanged()));
-    printf("added element\n");
     return true;
 }
 
@@ -36,7 +43,7 @@ bool  LibInfos::_removeElement(LibraryInfo *exe)
     return false;
  }
 
-QStringList LibInfos::listFiles()
+QStringList LibInfos::listLibs()
 {
     QStringList fileNames;
     QList<LibraryInfo*>::iterator itr;
@@ -45,7 +52,7 @@ QStringList LibInfos::listFiles()
     QMutexLocker lock(&m_listMutex); //LOCKER
     for (itr = m_Libs.begin(); itr != m_Libs.end(); itr++) {
         LibraryInfo *info = (*itr);
-        fileNames << info->getFileName();
+        fileNames << info->getLibName();
     }
     return fileNames;
  }
