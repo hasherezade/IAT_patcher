@@ -136,7 +136,6 @@ private:
     ThreadCounter m_LoadersCount;
 
     Executables m_exes;
-    LibInfos m_libInfos;
     ExeHandler* m_ExeSelected;
     offset_t m_ThunkSelected;
     QLabel urlLabel;
