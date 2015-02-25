@@ -67,8 +67,8 @@ public:
     ~MainWindow();
 
 protected:
-	/* events */
-	void dragEnterEvent(QDragEnterEvent* ev) { ev->accept(); }
+    /* events */
+    void dragEnterEvent(QDragEnterEvent* ev) { ev->accept(); }
     void dropEvent(QDropEvent* ev);
 
 
@@ -104,12 +104,12 @@ private slots:
     void on_hookButton_clicked();
     void on_saveButton_clicked();
 
-	void on_actionAbout_triggered() {  info(); }
+    void on_actionAbout_triggered() {  info(); }
 
 private:
     void reloadExe(ExeHandler* exe);
     void removeExe(ExeHandler* exe);
-	void info();
+    void info();
     void clear();
     bool parse(QString &fileName);
 

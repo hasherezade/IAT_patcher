@@ -7,7 +7,7 @@
 
 class InfoTableModel : public QAbstractTableModel
 {
-	Q_OBJECT
+    Q_OBJECT
 
 signals:
     void hookRequested(ExeHandler* exe);
@@ -26,27 +26,27 @@ public:
         COL_IMPNUM,
         COUNT_COL
     };
-	InfoTableModel(QObject *v_parent)
-		: QAbstractTableModel(v_parent), m_Exes(NULL) {}
+    InfoTableModel(QObject *v_parent)
+        : QAbstractTableModel(v_parent), m_Exes(NULL) {}
 
-	virtual ~InfoTableModel() { }
+    virtual ~InfoTableModel() { }
 
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-	Qt::ItemFlags flags(const QModelIndex &index) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const;
 
-	int columnCount(const QModelIndex &parent) const { return COUNT_COL; }
-	int rowCount(const QModelIndex &parent) const { return countElements(); }
+    int columnCount(const QModelIndex &parent) const { return COUNT_COL; }
+    int rowCount(const QModelIndex &parent) const { return countElements(); }
 
-	QVariant data(const QModelIndex &index, int role) const;
-	bool setData(const QModelIndex &, const QVariant &, int);
+    QVariant data(const QModelIndex &index, int role) const;
+    bool setData(const QModelIndex &, const QVariant &, int);
 
-	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const
-	{
-		//no index item pointer
-		return createIndex(row, column);
-	}
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const
+    {
+        //no index item pointer
+        return createIndex(row, column);
+    }
 
-	QModelIndex parent(const QModelIndex &index) const { return QModelIndex(); } // no parent
+    QModelIndex parent(const QModelIndex &index) const { return QModelIndex(); } // no parent
 
 public slots:
     void setExecutables(Executables *exes)
@@ -65,7 +65,7 @@ protected slots:
     void onExeListChanged() { reset(); }
 
 protected:
-	Executables* m_Exes;
+    Executables* m_Exes;
 
     QVariant getDisplayData(int role, int attribute, ExeHandler *exeHndl) const;
     int countElements() const { return (m_Exes == NULL)? 0: m_Exes->size(); }

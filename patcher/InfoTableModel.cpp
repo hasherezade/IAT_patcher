@@ -10,30 +10,30 @@
 #define NOT_OK_COLOR "red"
 
 QVariant InfoTableModel::headerData(int section, Qt::Orientation orientation, int role) const
-	{
-	if (role != Qt::DisplayRole) return QVariant();
-	if (orientation != Qt::Horizontal) return QVariant();
-	switch (section) {
+    {
+    if (role != Qt::DisplayRole) return QVariant();
+    if (orientation != Qt::Horizontal) return QVariant();
+    switch (section) {
         case COL_NAME : return "FileName";
         case COL_HOOKED: return "Hooked?";
         case COL_RAW_SIZE: return "RawSize";
         case COL_VIRTUAL_SIZE: return "VirtualSize";
         case COL_SECNUM : return "Sections";
         case COL_IMPNUM : return "Imports";
-	}
-	return QVariant();
+    }
+    return QVariant();
 }
 
 Qt::ItemFlags InfoTableModel::flags(const QModelIndex &index) const
 {
-	if (!index.isValid()) return 0;
-	Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    if (!index.isValid()) return 0;
+    Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
-	if (index.column() == COL_HOOKED) {
+    if (index.column() == COL_HOOKED) {
         f |= Qt::ItemIsUserCheckable;
         f |= Qt::ItemIsEditable;
-	}
-	return f;
+    }
+    return f;
 }
 
 bool InfoTableModel::setData(const QModelIndex &index, const QVariant &, int role)
@@ -59,7 +59,7 @@ QVariant InfoTableModel::data(const QModelIndex &index, int role) const
     if (attribute >= COUNT_COL) return QVariant();
 
     ExeHandler *exeHndl = m_Exes->at(elNum);
-	if (exeHndl == NULL) return QVariant();
+    if (exeHndl == NULL) return QVariant();
     Executable *exe = exeHndl->getExe();
     if (exe == NULL) return QVariant();
 
@@ -77,7 +77,7 @@ QVariant InfoTableModel::data(const QModelIndex &index, int role) const
     if (role == Qt::DecorationRole && attribute == COL_NAME) {
         if (exe->isBit32()) return QIcon(":/icons/app32.ico");
         if (exe->isBit64()) return QIcon(":/icons/app64.ico");
-	}
+    }
 
     if (role == Qt::CheckStateRole && attribute == COL_HOOKED) {
         if (exeHndl->getHookedState()) return Qt::Checked;

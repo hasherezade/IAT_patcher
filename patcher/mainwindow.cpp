@@ -28,27 +28,27 @@ MainWindow::MainWindow(QWidget *parent) :
     m->setDynamicSortFilter(true);
     m->setSourceModel(infoModel);
 
-	m_ui.outputTable->setModel(m);
+    m_ui.outputTable->setModel(m);
     m_ui.outputTable->setSortingEnabled(true);
 */
     m_ui.outputTable->setModel(infoModel);
     m_ui.outputTable->setSortingEnabled(false);
     m_ui.outputTable->horizontalHeader()->setStretchLastSection(false);
     m_ui.outputTable->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
-	m_ui.outputTable->verticalHeader()->show();
+    m_ui.outputTable->verticalHeader()->show();
 
-	m_ui.outputTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_ui.outputTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_ui.outputTable->setSelectionMode(QAbstractItemView::SingleSelection);
-	m_ui.outputTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_ui.outputTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 
     m_ui.statusBar->addPermanentWidget(&urlLabel);
     urlLabel.setTextFormat(Qt::RichText);
-	urlLabel.setTextInteractionFlags(Qt::TextBrowserInteraction);
-	urlLabel.setOpenExternalLinks(true);
+    urlLabel.setTextInteractionFlags(Qt::TextBrowserInteraction);
+    urlLabel.setOpenExternalLinks(true);
     urlLabel.setText("<a href=\""+ SITE_LINK +"\">"+SITE_LINK+"</a>");
 
-	this->setAcceptDrops(true);
+    this->setAcceptDrops(true);
 
     this->impModel = new ImportsTableModel(m_ui.outputTable);
 
@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m2->setDynamicSortFilter(true);
     m2->setSourceModel(impModel);
 
-	m_ui.importsTable->setModel(m2);
+    m_ui.importsTable->setModel(m2);
     m_ui.importsTable->setSortingEnabled(true);
     m_ui.importsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_ui.importsTable->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -71,8 +71,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ui.importsTable->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(m_ui.importsTable, SIGNAL(customContextMenuRequested(QPoint)), SLOT(functionsMenuRequested(QPoint)));
 
-	connect( m_ui.outputTable->selectionModel(), SIGNAL( currentRowChanged(QModelIndex,QModelIndex)), this, SLOT( rowChangedSlot(QModelIndex,QModelIndex) ) );
-	connect( this, SIGNAL( exeSelected(ExeHandler*)), impModel, SLOT( setExecutable(ExeHandler*) ) );
+    connect( m_ui.outputTable->selectionModel(), SIGNAL( currentRowChanged(QModelIndex,QModelIndex)), this, SLOT( rowChangedSlot(QModelIndex,QModelIndex) ) );
+    connect( this, SIGNAL( exeSelected(ExeHandler*)), impModel, SLOT( setExecutable(ExeHandler*) ) );
     connect( this, SIGNAL( exeSelected(ExeHandler*)), this, SLOT( refreshExeView(ExeHandler*) ) );
 
     connect( this, SIGNAL( exeUpdated(ExeHandler*)), impModel, SLOT( setExecutable(ExeHandler*) ) );
@@ -138,19 +138,19 @@ void MainWindow::loadingStatusChanged()
 
 void MainWindow::dropEvent(QDropEvent* ev)
 {
-	QList<QUrl> urls = ev->mimeData()->urls();
-	QList<QUrl>::Iterator urlItr;
-	QCursor cur = this->cursor();
-	this->setCursor(Qt::BusyCursor);
+    QList<QUrl> urls = ev->mimeData()->urls();
+    QList<QUrl>::Iterator urlItr;
+    QCursor cur = this->cursor();
+    this->setCursor(Qt::BusyCursor);
 
-	for (urlItr = urls.begin() ; urlItr != urls.end(); urlItr++) {
+    for (urlItr = urls.begin() ; urlItr != urls.end(); urlItr++) {
         QString fileName = urlItr->toLocalFile();
-		if (fileName == "") continue;
+        if (fileName == "") continue;
         if (parse(fileName)) {
-		    m_ui.fileEdit->setText(fileName);
+            m_ui.fileEdit->setText(fileName);
         }
     }
-	this->setCursor(cur);
+    this->setCursor(cur);
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -400,7 +400,7 @@ bool MainWindow::parse(QString &fileName)
     if (fileName == "") return false;
 
     QString link = QFile::symLinkTarget(fileName);
-	if (link.length() > 0) fileName = link;
+    if (link.length() > 0) fileName = link;
 
     bufsize_t maxMapSize = FILE_MAXSIZE;
     try {
@@ -413,9 +413,9 @@ bool MainWindow::parse(QString &fileName)
 
         ExeHandlerLoader *loader = new ExeHandlerLoader(fileName);
         QObject::connect(loader, SIGNAL( loaded(ExeHandler*) ), &m_exes, SLOT( addExe(ExeHandler*) ) );
-		QObject::connect(loader, SIGNAL( loadingFailed(QString ) ), this, SLOT( onLoadingFailed(QString ) ) );
-		QObject::connect(loader, SIGNAL(finished()), this, SLOT( onLoaderThreadFinished() ) );
-		//printf("Thread started...\n");
+        QObject::connect(loader, SIGNAL( loadingFailed(QString ) ), this, SLOT( onLoadingFailed(QString ) ) );
+        QObject::connect(loader, SIGNAL(finished()), this, SLOT( onLoaderThreadFinished() ) );
+        //printf("Thread started...\n");
         m_LoadersCount.inc();
         loader->start();
 
@@ -428,31 +428,31 @@ bool MainWindow::parse(QString &fileName)
 
 void MainWindow::info()
 {
-	int ret = 0;
-	int count = 0;
-	QPixmap p(":/favicon.ico");
-	QString msg = "<b>IAT Patcher</b> - tool for persistent IAT hooking<br/>";
-	msg += "author: hasherezade<br/><br/>";
-	msg += "THIS TOOL IS PROVIDED \"AS IS\" WITHOUT WARRANTIES OF ANY KIND. <br/>\
+    int ret = 0;
+    int count = 0;
+    QPixmap p(":/favicon.ico");
+    QString msg = "<b>IAT Patcher</b> - tool for persistent IAT hooking<br/>";
+    msg += "author: hasherezade<br/><br/>";
+    msg += "THIS TOOL IS PROVIDED \"AS IS\" WITHOUT WARRANTIES OF ANY KIND. <br/>\
         Use it at your own risk and responsibility.<br/>\
         Only for research purpose. Do not use it to break the law!";
 
-	QMessageBox msgBox;
-	QLabel urlLabel;
-	urlLabel.setTextFormat(Qt::RichText);
+    QMessageBox msgBox;
+    QLabel urlLabel;
+    urlLabel.setTextFormat(Qt::RichText);
 
-	urlLabel.setTextInteractionFlags(Qt::TextBrowserInteraction);
-	urlLabel.setOpenExternalLinks(true);
-	msgBox.setWindowTitle("Info");
+    urlLabel.setTextInteractionFlags(Qt::TextBrowserInteraction);
+    urlLabel.setOpenExternalLinks(true);
+    msgBox.setWindowTitle("Info");
 
-	urlLabel.setText("<a href=\"" + SITE_LINK + "\">More...</a>");
+    urlLabel.setText("<a href=\"" + SITE_LINK + "\">More...</a>");
 
-	msgBox.layout()->addWidget(&urlLabel);
+    msgBox.layout()->addWidget(&urlLabel);
 
-	msgBox.setText(msg);
-	msgBox.setAutoFillBackground(true);
-	msgBox.setIconPixmap(p);
-	msgBox.setStandardButtons(QMessageBox::Ok);
-	msgBox.setDefaultButton(QMessageBox::Ok);
-	msgBox.exec();
+    msgBox.setText(msg);
+    msgBox.setAutoFillBackground(true);
+    msgBox.setIconPixmap(p);
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.exec();
 }

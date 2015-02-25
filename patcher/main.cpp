@@ -8,11 +8,11 @@
 
 int main(int argc, char *argv[])
 {
-	Q_INIT_RESOURCE(application);
+    Q_INIT_RESOURCE(application);
     QApplication app(argc, argv);
     ExeFactory::init();
 
-	MainWindow w;
+    MainWindow w;
     w.show();
 
     return app.exec();

@@ -6,7 +6,7 @@
 
 class ImportsTableModel : public QAbstractTableModel
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public slots:
     void modelChanged() { reset(); }
@@ -20,27 +20,27 @@ public:
         COL_REPLACEMENT,
         COUNT_COL
     };
-	ImportsTableModel(QObject *v_parent)
-		: QAbstractTableModel(v_parent), m_ExeHandler(NULL), m_FuncMap(NULL) {}
+    ImportsTableModel(QObject *v_parent)
+        : QAbstractTableModel(v_parent), m_ExeHandler(NULL), m_FuncMap(NULL) {}
 
-	virtual ~ImportsTableModel() { }
+    virtual ~ImportsTableModel() { }
 
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-	Qt::ItemFlags flags(const QModelIndex &index) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const;
 
-	int columnCount(const QModelIndex &parent) const { return COUNT_COL; }
-	int rowCount(const QModelIndex &parent) const { return countElements(); }
+    int columnCount(const QModelIndex &parent) const { return COUNT_COL; }
+    int rowCount(const QModelIndex &parent) const { return countElements(); }
 
-	QVariant data(const QModelIndex &index, int role) const;
-	bool setData(const QModelIndex &, const QVariant &, int);
+    QVariant data(const QModelIndex &index, int role) const;
+    bool setData(const QModelIndex &, const QVariant &, int);
 
-	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const
-	{
-		//no index item pointer
-		return createIndex(row, column);
-	}
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const
+    {
+        //no index item pointer
+        return createIndex(row, column);
+    }
 
-	QModelIndex parent(const QModelIndex &index) const { return QModelIndex(); } // no parent
+    QModelIndex parent(const QModelIndex &index) const { return QModelIndex(); } // no parent
 
     offset_t selectedIndexToThunk(const QModelIndex &index) const
     {
@@ -80,7 +80,7 @@ protected:
         size_t entriesCount = countElements();
         if (entriesCount == 0 || impNum >= entriesCount) return INVALID_ADDR;
         
-	    offset_t thunk = this->m_FuncMap->thunkAt(impNum);
+        offset_t thunk = this->m_FuncMap->thunkAt(impNum);
         //printf("Thunk = %llx (%x)\n", thunk, impNum);
         return thunk;
     }
