@@ -75,6 +75,7 @@ protected:
 	/* events */
 	void dragEnterEvent(QDragEnterEvent* ev) { ev->accept(); }
     void dropEvent(QDropEvent* ev);
+    void closeEvent(QCloseEvent* ev);
 
 private slots:
     void filterLibs(const QString &str);

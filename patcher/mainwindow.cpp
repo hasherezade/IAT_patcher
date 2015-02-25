@@ -164,6 +164,23 @@ void MainWindow::dropEvent(QDropEvent* ev)
 	this->setCursor(cur);
 }
 
+void MainWindow::closeEvent ( QCloseEvent * event )
+{
+    const size_t loadedCount = this->m_exes.size();
+    if (loadedCount == 0) {
+        event->accept();
+        return;
+    }
+    event->ignore();
+    QString ending = loadedCount > 1 ? "s" : "";
+    if (QMessageBox::Yes == QMessageBox::question(this, "Exit confirmation",
+        "You have " + QString::number(loadedCount) + " file" + ending + " loaded, do you really want to exit?", 
+        QMessageBox::Yes|QMessageBox::No))
+    {
+        event->accept();
+    }
+}
+
 void MainWindow::on_pushButton_clicked()
 {
     return openExe();
