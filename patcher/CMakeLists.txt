@@ -41,6 +41,7 @@ set (hdrs
     ImportsTableModel.h
     FileLoader.h
     ExeHandlerLoader.h
+    ReplacementsDialog.h
     mainwindow.h
     resource.h
 )
@@ -62,6 +63,7 @@ set (srcs
     ImportsTableModel.cpp
     FileLoader.cpp
     ExeHandlerLoader.cpp
+    ReplacementsDialog.cpp
     mainwindow.cpp
     main.cpp
 )

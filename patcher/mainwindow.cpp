@@ -84,8 +84,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(infoModel, SIGNAL(hookRequested(ExeHandler* )), this, SLOT(onHookRequested(ExeHandler* )) );
 
     connect(this, SIGNAL(thunkSelected(offset_t)), this, SLOT(setThunkSelected(offset_t)) );
-    connect(this, SIGNAL(parseLibrary(QString&)), &m_libParser, SLOT(on_parseLibrary(QString&)) );
-    connect(&m_libParser, SIGNAL(infoCreated(LibraryInfo*)),  &m_libInfos, SLOT(addElement(LibraryInfo *)) );
 }
 
 MainWindow::~MainWindow()
@@ -95,23 +93,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::initReplacementsDialog()
 {
-    this->m_replacementsDialog = new QDialog(this);
-    this->m_uiReplacements = new Ui_Replacements();
-    this->m_uiReplacements->setupUi(m_replacementsDialog);
-
-    connect(this->m_uiReplacements->okCancel_buttons, SIGNAL(rejected()), this->m_replacementsDialog, SLOT(hide()));
-    connect(this->m_uiReplacements->okCancel_buttons, SIGNAL(accepted()), this, SLOT(setReplacement()));
-    connect(m_uiReplacements->addLibraryButton, SIGNAL(clicked()), this, SLOT(openLibrary()));
-
-    m_libsModel = new LibsModel(this->m_uiReplacements->libraryCombo);
-    m_functModel = new FunctionsModel(this->m_uiReplacements->functionCombo);
-
-    this->m_uiReplacements->libraryCombo->setModel(m_libsModel);
-    this->m_uiReplacements->functionCombo->setModel(m_functModel);
-    m_libsModel->setLibraries(&m_libInfos);
-    m_functModel->setLibraries(&m_libInfos);
-
-    connect(m_uiReplacements->libraryCombo, SIGNAL(currentIndexChanged(int)), m_functModel, SLOT(on_currentndexChanged(int)));
+    m_replacementsDialog = new ReplacementsDialog(this);
+    connect(m_replacementsDialog, SIGNAL(setReplacement(QString, QString)), this, SLOT(updateReplacement(QString, QString)) );
+    connect(this, SIGNAL(replacementAccepted()), m_replacementsDialog, SLOT(hide()));
+    m_replacementsDialog->setAcceptDrops(true);
 }
 
 void MainWindow::filterLibs(const QString &str)
@@ -200,20 +185,6 @@ void MainWindow::openExe()
     }
 }
 
-void MainWindow::openLibrary()
-{
-    QString fileName = QFileDialog::getOpenFileName(
-        this,
-        tr("Open executable"),
-        QDir::homePath(),
-        "DLL Files (*.dll);;All files (*.*)"
-        );
-
-    if (fileName != "") {
-        emit parseLibrary(fileName);
-    }
-}
-
 void MainWindow::removeExe(ExeHandler* exe)
 {
     selectExe(NULL);
@@ -285,7 +256,6 @@ void MainWindow::makeFunctionsMenu()
     functionsMenu->addAction(settingsAction);
 }
 
-
 void MainWindow::makeFileMenu()
 {
     QMenu *menu = this->m_ui.menuFile;
@@ -322,57 +292,35 @@ void MainWindow::functionsMenuRequested(QPoint pos)
     emit thunkSelected(m_ThunkSelected);
 
     FuncDesc replName = this->m_ExeSelected->getReplAt(m_ThunkSelected);
-    //todo: on show?
-    QString libName;
-    QString funcName;
-    FuncUtil::parseFuncDesc(replName, libName, funcName);
-
-    this->m_uiReplacements->libraryEdit->setText(libName);
-    this->m_uiReplacements->functionEdit->setText(funcName);
+    this->m_replacementsDialog->displayReplacement(replName);
 
     this->functionsMenu->popup(table->viewport()->mapToGlobal(pos));
 }
 
 void MainWindow::setThunkSelected(offset_t thunk)
 {
-    QString thunkStr = QString::number(thunk, 16);
     QString libName = this->m_ExeSelected->m_FuncMap.thunkToLibName(thunk);
     QString funcName = this->m_ExeSelected->m_FuncMap.thunkToFuncName(thunk);
-
-    this->m_uiReplacements->thunkLabel->setText(thunkStr);
-    this->m_uiReplacements->libToReplaceLabel->setText(libName+"."+funcName);
+    this->m_replacementsDialog->displayFuncToReplace(thunk, libName, funcName);
 }
 
-
-void MainWindow::setReplacement()
+void MainWindow::updateReplacement(QString libName, QString funcName)
 {
-    QString libName, funcName;
-
-    int tabNum = this->m_uiReplacements->tabWidget->currentIndex();
-    if (tabNum == 0) {
-        libName = this->m_uiReplacements->libraryEdit->text();
-        funcName = this->m_uiReplacements->functionEdit->text();
-    } else if (tabNum == 1) {
-        libName = this->m_uiReplacements->libraryCombo->currentText();
-        funcName = this->m_uiReplacements->functionCombo->currentText();
-    }
-
     QString substName = "";
 
     if (libName.length() != 0 && funcName.length() != 0) {
         substName = libName + "." + funcName;
     }
     if (this->m_ExeSelected->m_Repl.getAt(m_ThunkSelected) == substName) {
-        this->m_replacementsDialog->hide();
+        emit replacementAccepted();
         return;
     }
     if (this->m_ExeSelected->defineReplacement(m_ThunkSelected, substName) == false) {
         QMessageBox::warning(NULL, "Error", "Invalid replacement definition!");
         return;
     }
-    this->m_replacementsDialog->hide();
+    emit replacementAccepted();
 }
-
 
 void MainWindow::takeAction()
 {

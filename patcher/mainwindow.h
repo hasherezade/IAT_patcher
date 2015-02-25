@@ -12,10 +12,7 @@
 #include "ImportsTableModel.h"
 #include "InfoTableModel.h"
 #include "ExeController.h"
-
-#include "dllparse/LibraryParser.h"
-#include "dllparse/LibsModel.h"
-#include "dllparse/FunctionsModel.h"
+#include "ReplacementsDialog.h"
 
 class ThreadCounter : public QObject
 {
@@ -63,9 +60,9 @@ signals:
     void exeSelected(ExeHandler* exe);
     void exeUpdated(ExeHandler* exe);
     void hookRequested(ExeHandler* exe);
-    void parseLibrary(QString &path);
 
     void thunkSelected(offset_t thunk);
+    void replacementAccepted();
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -96,13 +93,12 @@ private slots:
     void customMenuRequested(QPoint pos);
     void functionsMenuRequested(QPoint pos);
     void onHookRequested(ExeHandler* exeHndl);
-    void setReplacement();
+    void updateReplacement(QString libName, QString funcName);
     void setThunkSelected(offset_t thunk);
 
     void onLoaderThreadFinished();
     void rowChangedSlot(QModelIndex, QModelIndex);
     void openExe();
-    void openLibrary();
     //---
     void on_pushButton_clicked();
     void on_reloadButton_clicked();
@@ -125,13 +121,12 @@ private:
     void makeFileMenu();
     void initReplacementsDialog();
 
-    QDialog *m_replacementsDialog;
+    ReplacementsDialog *m_replacementsDialog;
     QMenu *customMenu, *functionsMenu;
 
     QSortFilterProxyModel *m2;
 
     Ui::MainWindow m_ui;
-    Ui_Replacements* m_uiReplacements;
 
     ImportsTableModel *impModel;
     InfoTableModel *infoModel;
@@ -147,7 +142,6 @@ private:
     QLabel urlLabel;
 
     ExeController exeController;
-    LibraryParser m_libParser;
 };
 
 
