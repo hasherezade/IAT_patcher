@@ -157,9 +157,21 @@ void MainWindow::closeEvent ( QCloseEvent * event )
         return;
     }
     event->ignore();
-    QString ending = loadedCount > 1 ? "s" : "";
+    bool hasModified = false;
+    for (int i = 0; i < loadedCount; i++) {
+        ExeHandler *hndl = this->m_exes.at(i);
+        if (hndl->getModifiedState() || hndl->getUnappliedState()) {
+            //printf("Modified: %s\n", hndl->getFileName().toStdString().c_str());
+            hasModified = true;
+            break;
+        }
+    }
+    if (!hasModified) {
+        event->accept();
+        return;
+    }
     if (QMessageBox::Yes == QMessageBox::question(this, "Exit confirmation",
-        "You have " + QString::number(loadedCount) + " file" + ending + " loaded, do you really want to exit?", 
+        "You made some unsaved changes, do you really want to exit?", 
         QMessageBox::Yes|QMessageBox::No))
     {
         event->accept();
