@@ -34,7 +34,6 @@ void LibraryParser::makeLibraryInfo(Executable* exe, QString fileName)
     if (!exports) return;
     size_t entriesCnt = exports->getEntriesCount();
     if (entriesCnt == 0) return;
-    printf("entriesCnt %d\n", entriesCnt);
 
     LibraryInfo *info = new LibraryInfo(fileName);
     for(int i = 0; i < entriesCnt; i++) {
