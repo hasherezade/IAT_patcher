@@ -12,7 +12,8 @@ QString  SITE_LINK = "http://hasherezade.net/IAT_patcher";
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), m_replacementsDialog(NULL),
-    infoModel(NULL), m_ExeSelected(NULL), customMenu(NULL), functionsMenu(NULL)
+    infoModel(NULL), m_libsModel(NULL), m_functModel(NULL),
+    m_ExeSelected(NULL), customMenu(NULL), functionsMenu(NULL)
 {
     m_ui.setupUi(this);
     initReplacementsDialog();
@@ -41,7 +42,6 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ui.outputTable->setSelectionMode(QAbstractItemView::SingleSelection);
     m_ui.outputTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-
     m_ui.statusBar->addPermanentWidget(&urlLabel);
     urlLabel.setTextFormat(Qt::RichText);
     urlLabel.setTextInteractionFlags(Qt::TextBrowserInteraction);
@@ -51,7 +51,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setAcceptDrops(true);
 
     this->impModel = new ImportsTableModel(m_ui.outputTable);
-
     this->m2 = new QSortFilterProxyModel(this);
     m2->setDynamicSortFilter(true);
     m2->setSourceModel(impModel);
@@ -61,7 +60,6 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ui.importsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_ui.importsTable->setSelectionMode(QAbstractItemView::SingleSelection);
     m_ui.importsTable->horizontalHeader()->setResizeMode(2, QHeaderView::Stretch);
-
 
     connect( m_ui.filterLibEdit, SIGNAL( textChanged (const QString &)), this, SLOT( filterLibs(const QString &)) );
     connect( m_ui.filterProcEdit, SIGNAL( textChanged (const QString &)), this, SLOT( filterFuncs(const QString &)) );
@@ -77,13 +75,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect( this, SIGNAL( exeUpdated(ExeHandler*)), impModel, SLOT( setExecutable(ExeHandler*) ) );
     connect( this, SIGNAL( exeUpdated(ExeHandler*)), infoModel, SLOT( onExeListChanged() ) );
-    connect( &this->exeController, SIGNAL( exeUpdated(ExeHandler*)), this, SLOT( refreshExeView(ExeHandler*) ) );
+    connect( &this->exeController, SIGNAL( exeUpdated(ExeHandler*)), this, SLOT( refreshExeView(ExeHandler*)) );
 
-    connect( &this->exeController, SIGNAL( exeUpdated(ExeHandler*)), infoModel, SLOT( onExeListChanged() ) );
+    connect( &this->exeController, SIGNAL(exeUpdated(ExeHandler*)), infoModel, SLOT(onExeListChanged()) );
 
     connect(&m_LoadersCount, SIGNAL(counterChanged()), this, SLOT(loadingStatusChanged() ));
     connect(this, SIGNAL(hookRequested(ExeHandler* )), this, SLOT(onHookRequested(ExeHandler* ) ));
-    connect(infoModel, SIGNAL(hookRequested(ExeHandler* )), this, SLOT(onHookRequested(ExeHandler* ) ));
+    connect(infoModel, SIGNAL(hookRequested(ExeHandler* )), this, SLOT(onHookRequested(ExeHandler* )) );
 
     connect(this, SIGNAL(thunkSelected(offset_t)), this, SLOT(setThunkSelected(offset_t)) );
 }
@@ -95,12 +93,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::initReplacementsDialog()
 {
-    this->m_replacementsDialog = new QDialog(this);
-    this->m_uiReplacements = new Ui_Replacements();
-    this->m_uiReplacements->setupUi(m_replacementsDialog);
+    m_replacementsDialog = new ReplacementsDialog(this);
+    connect(m_replacementsDialog, SIGNAL(setReplacement(QString, QString)), this, SLOT(updateReplacement(QString, QString)) );
+    connect(this, SIGNAL(replacementAccepted()), m_replacementsDialog, SLOT(hide()));
 
-    connect(this->m_uiReplacements->okCancel_buttons, SIGNAL(rejected()), this->m_replacementsDialog, SLOT(hide()));
-    connect(this->m_uiReplacements->okCancel_buttons, SIGNAL(accepted()), this, SLOT(setReplacement()));
 }
 
 void MainWindow::filterLibs(const QString &str)
@@ -151,6 +147,35 @@ void MainWindow::dropEvent(QDropEvent* ev)
         }
     }
     this->setCursor(cur);
+}
+
+void MainWindow::closeEvent ( QCloseEvent * event )
+{
+    const size_t loadedCount = this->m_exes.size();
+    if (loadedCount == 0) {
+        event->accept();
+        return;
+    }
+    event->ignore();
+    bool hasModified = false;
+    for (int i = 0; i < loadedCount; i++) {
+        ExeHandler *hndl = this->m_exes.at(i);
+        if (hndl->getModifiedState() || hndl->getUnappliedState()) {
+            //printf("Modified: %s\n", hndl->getFileName().toStdString().c_str());
+            hasModified = true;
+            break;
+        }
+    }
+    if (!hasModified) {
+        event->accept();
+        return;
+    }
+    if (QMessageBox::Yes == QMessageBox::question(this, "Exit confirmation",
+        "You made some unsaved changes, do you really want to exit?", 
+        QMessageBox::Yes|QMessageBox::No))
+    {
+        event->accept();
+    }
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -243,7 +268,6 @@ void MainWindow::makeFunctionsMenu()
     functionsMenu->addAction(settingsAction);
 }
 
-
 void MainWindow::makeFileMenu()
 {
     QMenu *menu = this->m_ui.menuFile;
@@ -280,46 +304,35 @@ void MainWindow::functionsMenuRequested(QPoint pos)
     emit thunkSelected(m_ThunkSelected);
 
     FuncDesc replName = this->m_ExeSelected->getReplAt(m_ThunkSelected);
-    //todo: on show?
-    QString libName;
-    QString funcName;
-    FuncUtil::parseFuncDesc(replName, libName, funcName);
-
-    this->m_uiReplacements->libraryEdit->setText(libName);
-    this->m_uiReplacements->functionEdit->setText(funcName);
+    this->m_replacementsDialog->displayReplacement(replName);
 
     this->functionsMenu->popup(table->viewport()->mapToGlobal(pos));
 }
 
 void MainWindow::setThunkSelected(offset_t thunk)
 {
-    QString thunkStr = QString::number(thunk, 16);
     QString libName = this->m_ExeSelected->m_FuncMap.thunkToLibName(thunk);
     QString funcName = this->m_ExeSelected->m_FuncMap.thunkToFuncName(thunk);
-
-    this->m_uiReplacements->thunkLabel->setText(thunkStr);
-    this->m_uiReplacements->libToReplaceLabel->setText(libName+"."+funcName);
+    this->m_replacementsDialog->displayFuncToReplace(thunk, libName, funcName);
 }
 
-
-void MainWindow::setReplacement()
+void MainWindow::updateReplacement(QString libName, QString funcName)
 {
-    QString libName = this->m_uiReplacements->libraryEdit->text();
-    QString funcName = this->m_uiReplacements->functionEdit->text();
     QString substName = "";
 
     if (libName.length() != 0 && funcName.length() != 0) {
         substName = libName + "." + funcName;
     }
-    if (this->m_ExeSelected->m_Repl.getAt(m_ThunkSelected) == substName) return;
-
+    if (this->m_ExeSelected->m_Repl.getAt(m_ThunkSelected) == substName) {
+        emit replacementAccepted();
+        return;
+    }
     if (this->m_ExeSelected->defineReplacement(m_ThunkSelected, substName) == false) {
         QMessageBox::warning(NULL, "Error", "Invalid replacement definition!");
-    } else {
-        this->m_replacementsDialog->hide();
+        return;
     }
+    emit replacementAccepted();
 }
-
 
 void MainWindow::takeAction()
 {

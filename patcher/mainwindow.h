@@ -12,6 +12,7 @@
 #include "ImportsTableModel.h"
 #include "InfoTableModel.h"
 #include "ExeController.h"
+#include "ReplacementsDialog.h"
 
 class ThreadCounter : public QObject
 {
@@ -61,6 +62,7 @@ signals:
     void hookRequested(ExeHandler* exe);
 
     void thunkSelected(offset_t thunk);
+    void replacementAccepted();
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -70,7 +72,7 @@ protected:
     /* events */
     void dragEnterEvent(QDragEnterEvent* ev) { ev->accept(); }
     void dropEvent(QDropEvent* ev);
-
+    void closeEvent(QCloseEvent* ev);
 
 private slots:
     void filterLibs(const QString &str);
@@ -91,7 +93,7 @@ private slots:
     void customMenuRequested(QPoint pos);
     void functionsMenuRequested(QPoint pos);
     void onHookRequested(ExeHandler* exeHndl);
-    void setReplacement();
+    void updateReplacement(QString libName, QString funcName);
     void setThunkSelected(offset_t thunk);
 
     void onLoaderThreadFinished();
@@ -119,16 +121,18 @@ private:
     void makeFileMenu();
     void initReplacementsDialog();
 
-    QDialog *m_replacementsDialog;
+    ReplacementsDialog *m_replacementsDialog;
     QMenu *customMenu, *functionsMenu;
 
     QSortFilterProxyModel *m2;
 
     Ui::MainWindow m_ui;
-    Ui_Replacements* m_uiReplacements;
 
     ImportsTableModel *impModel;
     InfoTableModel *infoModel;
+    LibsModel *m_libsModel;
+    FunctionsModel *m_functModel;
+
     ThreadCounter m_LoadersCount;
 
     Executables m_exes;

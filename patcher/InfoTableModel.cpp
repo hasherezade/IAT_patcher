@@ -167,4 +167,3 @@ QVariant InfoTableModel::getDisplayData(int role, int attribute, ExeHandler *exe
     }
     return QVariant();
 }
-

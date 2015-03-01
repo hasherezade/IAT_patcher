@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>379</width>
-    <height>270</height>
+    <width>410</width>
+    <height>337</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -21,18 +21,21 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>379</width>
+    <width>410</width>
     <height>270</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>379</width>
-    <height>270</height>
+    <width>410</width>
+    <height>500</height>
    </size>
   </property>
   <property name="contextMenuPolicy">
    <enum>Qt::CustomContextMenu</enum>
+  </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
   </property>
   <property name="windowTitle">
    <string>Define replacement</string>
@@ -49,9 +52,9 @@
   <widget class="QDialogButtonBox" name="okCancel_buttons">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>230</y>
-     <width>341</width>
+     <x>10</x>
+     <y>300</y>
+     <width>381</width>
      <height>32</height>
     </rect>
    </property>
@@ -67,8 +70,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>359</width>
-     <height>111</height>
+     <width>391</width>
+     <height>101</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -91,7 +94,7 @@
      <number>9</number>
     </property>
     <property name="topMargin">
-     <number>20</number>
+     <number>5</number>
     </property>
     <property name="rightMargin">
      <number>9</number>
@@ -105,6 +108,16 @@
     <property name="verticalSpacing">
      <number>5</number>
     </property>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="libToReplaceLabel">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="placeholderText">
+       <string/>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
      <widget class="QLabel" name="label_10">
       <property name="text">
@@ -116,16 +129,6 @@
      <widget class="QLabel" name="label_11">
       <property name="text">
        <string>Function:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="libToReplaceLabel">
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-      <property name="placeholderText">
-       <string/>
       </property>
      </widget>
     </item>
@@ -144,13 +147,13 @@
     </item>
    </layout>
   </widget>
-  <widget class="QGroupBox" name="groupBox_2">
+  <widget class="QGroupBox" name="groupBox_3">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>120</y>
-     <width>359</width>
-     <height>111</height>
+     <y>110</y>
+     <width>391</width>
+     <height>191</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -168,15 +171,15 @@
    <property name="checkable">
     <bool>false</bool>
    </property>
-   <layout class="QGridLayout" name="gridLayout_2">
+   <layout class="QGridLayout" name="gridLayout_4">
     <property name="leftMargin">
-     <number>9</number>
+     <number>5</number>
     </property>
     <property name="topMargin">
      <number>20</number>
     </property>
     <property name="rightMargin">
-     <number>9</number>
+     <number>5</number>
     </property>
     <property name="bottomMargin">
      <number>5</number>
@@ -187,40 +190,163 @@
     <property name="verticalSpacing">
      <number>5</number>
     </property>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_8">
-      <property name="text">
-       <string>Function:</string>
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_9">
-      <property name="text">
-       <string>Library:</string>
+      <property name="contextMenuPolicy">
+       <enum>Qt::DefaultContextMenu</enum>
       </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="functionEdit">
-      <property name="placeholderText">
-       <string>functionName</string>
+      <property name="currentIndex">
+       <number>0</number>
       </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="libraryEdit">
-      <property name="placeholderText">
-       <string>example.dll</string>
-      </property>
+      <widget class="QWidget" name="tab_1">
+       <attribute name="title">
+        <string>Edit</string>
+       </attribute>
+       <widget class="QWidget" name="gridLayoutWidget_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>361</width>
+          <height>91</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="editLayout">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
+         </property>
+         <property name="leftMargin">
+          <number>10</number>
+         </property>
+         <property name="topMargin">
+          <number>10</number>
+         </property>
+         <property name="rightMargin">
+          <number>10</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="libraryEdit">
+           <property name="placeholderText">
+            <string>example.dll</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_12">
+           <property name="text">
+            <string>Function:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="functionEdit">
+           <property name="placeholderText">
+            <string>functionName</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_13">
+           <property name="text">
+            <string>Library:</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Choose</string>
+       </attribute>
+       <widget class="QWidget" name="gridLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>361</width>
+          <height>91</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="choseLayout">
+         <property name="leftMargin">
+          <number>10</number>
+         </property>
+         <property name="topMargin">
+          <number>10</number>
+         </property>
+         <property name="rightMargin">
+          <number>10</number>
+         </property>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="libraryCombo"/>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="addLibraryButton">
+           <property name="maximumSize">
+            <size>
+             <width>30</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Load replacement library&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>+</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="functionCombo"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_15">
+           <property name="sizeIncrement">
+            <size>
+             <width>50</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Function:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_14">
+           <property name="maximumSize">
+            <size>
+             <width>50</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Library:</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
      </widget>
     </item>
    </layout>
   </widget>
  </widget>
  <tabstops>
-  <tabstop>libraryEdit</tabstop>
-  <tabstop>functionEdit</tabstop>
   <tabstop>okCancel_buttons</tabstop>
   <tabstop>thunkLabel</tabstop>
   <tabstop>libToReplaceLabel</tabstop>

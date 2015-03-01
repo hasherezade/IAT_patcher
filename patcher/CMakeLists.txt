@@ -16,6 +16,20 @@ set (stub_hdrs
     stub/Stub64Data.h
 )
 
+set (dllparse_hdrs
+    dllparse/LibraryParser.h
+    dllparse/LibraryInfo.h
+    dllparse/LibsModel.h
+    dllparse/FunctionsModel.h
+)
+
+set (dllparse_srcs
+    dllparse/LibraryParser.cpp
+    dllparse/LibraryInfo.cpp
+    dllparse/LibsModel.cpp
+    dllparse/FunctionsModel.cpp
+)
+
 set (hdrs
     StubMaker.h
     FuncReplacements.h
@@ -27,6 +41,7 @@ set (hdrs
     ImportsTableModel.h
     FileLoader.h
     ExeHandlerLoader.h
+    ReplacementsDialog.h
     mainwindow.h
     resource.h
 )
@@ -48,6 +63,7 @@ set (srcs
     ImportsTableModel.cpp
     FileLoader.cpp
     ExeHandlerLoader.cpp
+    ReplacementsDialog.cpp
     mainwindow.cpp
     main.cpp
 )
@@ -61,16 +77,18 @@ set (rcc application.qrc )
 qt4_add_resources(rcc_src ${rcc})
 
 QT4_WRAP_UI (forms_hdrs ${forms})
-QT4_WRAP_CPP (hdrs_moc ${hdrs})
+QT4_WRAP_CPP (hdrs_moc ${hdrs} ${dllparse_hdrs})
 
 SOURCE_GROUP("Source Files\\Auto Generated" FILES ${hdrs_moc} ${rcc_src} )
 SOURCE_GROUP("Source Files\\stub" FILES ${stub_srcs} )
 SOURCE_GROUP("Header Files\\stub" FILES ${stub_hdrs} )
+SOURCE_GROUP("Source Files\\dllparse" FILES ${dllparse_srcs} )
+SOURCE_GROUP("Header Files\\dllparse" FILES ${dllparse_hdrs} )
 
 INCLUDE(${QT_USE_FILE})
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 
-add_executable (IAT_Patcher IAT_Patcher.rc ${hdrs_moc} ${forms_hdrs} ${stub_srcs} ${stub_hdrs} ${hdrs} ${srcs}  ${rcc_src})
+add_executable (IAT_Patcher IAT_Patcher.rc ${hdrs_moc} ${forms_hdrs} ${stub_srcs} ${stub_hdrs} ${dllparse_hdrs} ${dllparse_srcs} ${hdrs} ${srcs}  ${rcc_src})
 target_link_libraries (IAT_Patcher ${PARSER_LIB} ${QT_QTGUI_LIBRARIES} ${QT_QTCORE_LIBRARIES})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
