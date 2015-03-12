@@ -42,17 +42,6 @@ public:
 
     QModelIndex parent(const QModelIndex &index) const { return QModelIndex(); } // no parent
 
-    offset_t selectedIndexToThunk(const QModelIndex &index) const
-    {
-        if (index.isValid() == false) return INVALID_ADDR;
-
-        QString thunk0 = index.sibling(index.row(), 0).data().toString();
-        bool isOk = false;
-        offset_t thunkNum = thunk0.toLongLong(&isOk, 16);
-        if (!isOk) return INVALID_ADDR;
-        return thunkNum;
-    }
-
 public slots:
     void setExecutable(ExeHandler* exeHndl)
     {

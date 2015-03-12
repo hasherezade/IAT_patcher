@@ -51,11 +51,11 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setAcceptDrops(true);
 
     this->impModel = new ImportsTableModel(m_ui.outputTable);
-    this->m2 = new QSortFilterProxyModel(this);
-    m2->setDynamicSortFilter(true);
-    m2->setSourceModel(impModel);
+    this->m_filteredImpModel = new QSortFilterProxyModel(this);
+    m_filteredImpModel->setDynamicSortFilter(true);
+    m_filteredImpModel->setSourceModel(impModel);
 
-    m_ui.importsTable->setModel(m2);
+    m_ui.importsTable->setModel(m_filteredImpModel);
     m_ui.importsTable->setSortingEnabled(true);
     m_ui.importsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_ui.importsTable->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -101,14 +101,14 @@ void MainWindow::initReplacementsDialog()
 
 void MainWindow::filterLibs(const QString &str)
 {
-    m2->setFilterRegExp(QRegExp(str, Qt::CaseInsensitive, QRegExp::FixedString));
-    m2->setFilterKeyColumn(1);
+    m_filteredImpModel->setFilterRegExp(QRegExp(str, Qt::CaseInsensitive, QRegExp::FixedString));
+    m_filteredImpModel->setFilterKeyColumn(1);
 }
 
 void MainWindow::filterFuncs(const QString &str)
 {
-    m2->setFilterRegExp(QRegExp(str, Qt::CaseInsensitive, QRegExp::FixedString));
-    m2->setFilterKeyColumn(2);
+    m_filteredImpModel->setFilterRegExp(QRegExp(str, Qt::CaseInsensitive, QRegExp::FixedString));
+    m_filteredImpModel->setFilterKeyColumn(2);
 }
 
 void MainWindow::refreshExeView(ExeHandler* exe)
@@ -300,7 +300,9 @@ void MainWindow::functionsMenuRequested(QPoint pos)
     QModelIndex index = table->indexAt(pos);
     if (index.isValid() == false) return;
 
-    m_ThunkSelected = this->impModel->selectedIndexToThunk(index);
+    bool isOk;
+    long long offset = m_filteredImpModel->data(index, Qt::UserRole).toLongLong(&isOk);
+    m_ThunkSelected = isOk ? offset : INVALID_ADDR;
     emit thunkSelected(m_ThunkSelected);
 
     FuncDesc replName = this->m_ExeSelected->getReplAt(m_ThunkSelected);
@@ -400,10 +402,7 @@ void MainWindow::onLoaderThreadFinished()
 
 void MainWindow::rowChangedSlot(QModelIndex curr, QModelIndex prev)
 {
-    size_t index = curr.row();
-    size_t prevIndex = prev.row();
-    //QVariant data = curr.data();
-
+    size_t index =  this->infoModel->data(curr, Qt::UserRole).toUInt();
     ExeHandler *exe = this->m_exes.at(index);
     selectExe(exe);
 }

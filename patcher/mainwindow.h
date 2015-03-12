@@ -124,7 +124,7 @@ private:
     ReplacementsDialog *m_replacementsDialog;
     QMenu *customMenu, *functionsMenu;
 
-    QSortFilterProxyModel *m2;
+    QSortFilterProxyModel *m_filteredImpModel;
 
     Ui::MainWindow m_ui;
 

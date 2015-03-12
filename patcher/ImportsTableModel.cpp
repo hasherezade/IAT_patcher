@@ -47,11 +47,14 @@ QVariant ImportsTableModel::data(const QModelIndex &index, int role) const
 {
     if (this->countElements() == 0 || m_FuncMap == NULL) return QVariant();
 
-    if (role != Qt::DisplayRole && role != Qt::EditRole) return QVariant();
-
     offset_t thunk = indexToFunctionThunk(index);
     if (thunk == INVALID_ADDR) return QVariant();
 
+    if (role == Qt::UserRole) {
+        return qint64(thunk);
+    }
+
+    if (role != Qt::DisplayRole && role != Qt::EditRole) return QVariant();
     int attribute = index.column();
     switch (attribute) {
         case COL_THUNK : return QString::number(thunk, 16);
