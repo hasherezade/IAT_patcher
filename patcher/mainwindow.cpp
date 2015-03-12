@@ -402,7 +402,9 @@ void MainWindow::onLoaderThreadFinished()
 
 void MainWindow::rowChangedSlot(QModelIndex curr, QModelIndex prev)
 {
-    size_t index =  this->infoModel->data(curr, Qt::UserRole).toUInt();
+    bool isOk = false;
+    size_t index =  this->infoModel->data(curr, Qt::UserRole).toUInt(&isOk);
+    if (!isOk) return;
     ExeHandler *exe = this->m_exes.at(index);
     selectExe(exe);
 }
