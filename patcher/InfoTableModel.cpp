@@ -59,7 +59,7 @@ QVariant InfoTableModel::data(const QModelIndex &index, int role) const
     if (attribute >= COUNT_COL) return QVariant();
 
     if (role == Qt::UserRole) {
-        return unsigned int(elNum);
+        return uint(elNum);
     }
 
     ExeHandler *exeHndl = m_Exes->at(elNum);
