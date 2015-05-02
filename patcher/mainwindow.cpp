@@ -24,14 +24,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->infoModel = new InfoTableModel(m_ui.outputTable);
     infoModel->setExecutables(&m_exes);
-/*
+
     QSortFilterProxyModel *m = new QSortFilterProxyModel(this);
     m->setDynamicSortFilter(true);
     m->setSourceModel(infoModel);
 
     m_ui.outputTable->setModel(m);
     m_ui.outputTable->setSortingEnabled(true);
-*/
+
     m_ui.outputTable->setModel(infoModel);
     m_ui.outputTable->setSortingEnabled(false);
     m_ui.outputTable->horizontalHeader()->setStretchLastSection(false);
@@ -390,7 +390,7 @@ void MainWindow::on_saveButton_clicked()
 
 void MainWindow::onLoadingFailed(QString fileName)
 {
-    QMessageBox::warning(NULL,"Error!", "Cannot load the file:" + fileName);
+    QMessageBox::warning(NULL,"Error!", "Cannot load the file: " + fileName);
 }
 
 void MainWindow::onLoaderThreadFinished()
