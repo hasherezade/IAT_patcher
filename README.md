@@ -9,8 +9,9 @@ Please report any bugs and remarks to: hasherezade@op.pl<br/>
 
 Requires:
 + bearparser: https://github.com/hasherezade/bearparser<br/>
-+ Qt4 Core<br/>
-+ Qt4 GUI<br/>
++ Qt SDK (qt-sdk)<br/>
++ Qt4 Core (libqt4-core)<br/>
++ Qt4 GUI (libqt4-gui)<br/>
 + cmake http://www.cmake.org/<br/>
 
 <b>Before build - download bearparser source into bearparser directory</b><br/>
