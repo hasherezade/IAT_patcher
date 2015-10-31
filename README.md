@@ -30,7 +30,7 @@ cd IAT_patcher
 git clone https://github.com/hasherezade/bearparser.git
 </pre>
 
-<b>1) Build (Linux example):</b><br/>
+<b>2) Build (Linux example):</b><br/>
 _NOTE: The same source should compile on Windows without problems, only generator (cmake -G ...) will be different_<br/><br/>
 If you are in directory IAT_patcher, go up:
 <pre>
