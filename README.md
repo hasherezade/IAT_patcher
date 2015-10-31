@@ -23,15 +23,15 @@ Just run it and it will do everything for you!
 Manual build:
 -
 To have more control on the process of building, you can also build IAT Patcher manualy, by following several simple steps:<br/>
-<b>Fetch the sources:</b><br/>
+<b>1) Fetch sources:</b><br/>
 <pre>
 git clone https://github.com/hasherezade/IAT_patcher.git
 cd IAT_patcher
 git clone https://github.com/hasherezade/bearparser.git
 </pre>
 
-<b>Build (Linux example):</b><br/>
-_NOTE: The same source should compile on Windows without problems, only generator will be different_<br/><br/>
+<b>1) Build (Linux example):</b><br/>
+_NOTE: The same source should compile on Windows without problems, only generator (cmake -G ...) will be different_<br/><br/>
 If you are in directory IAT_patcher, go up:
 <pre>
 cd ../
@@ -49,5 +49,5 @@ make
 <pre>
 ../build/patcher/IAT_Patcher
 </pre>
-
+Videotutorial:
 [![asciicast](https://asciinema.org/a/aakifgbiomqqnl0q08fzy3a62.png)](https://asciinema.org/a/aakifgbiomqqnl0q08fzy3a62)
