@@ -16,7 +16,7 @@ Requires:
 
 Autobuild:
 -
-To download complete source, compile and run IAT Patcher you can use this script (for Linux):<br/>
+To download complete source and compile IAT Patcher you can use this script (for Linux):<br/>
 https://gist.github.com/hasherezade/76a96e48ae25c4ed19b8<br/>
 Just run it and it will do everything for you!
 <br/>
