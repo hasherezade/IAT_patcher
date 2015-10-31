@@ -14,20 +14,24 @@ Requires:
 + Qt4 GUI (libqt4-gui)<br/>
 + cmake http://www.cmake.org/<br/>
 
-<b>Before build - download bearparser source into bearparser directory</b><br/>
-From main directory:
-<pre>git clone https://github.com/hasherezade/bearparser.git</pre>
-
-How to fetch complete source:
-===
+Autobuild:
+-
+To download complete source, compile and run IAT Patcher you can use this script (for Linux):<br/>
+https://gist.github.com/hasherezade/76a96e48ae25c4ed19b8<br/>
+Just run it and it will do everything for you!
+<br/>
+Manual build:
+-
+To have more control on the process of building, you can also build IAT Patcher manualy, by following several simple steps:<br/>
+<b>Fetch the sources:</b><br/>
 <pre>
 git clone https://github.com/hasherezade/IAT_patcher.git
 cd IAT_patcher
 git clone https://github.com/hasherezade/bearparser.git
 </pre>
 
-How to build (Linux example):
-===
+<b>Build (Linux example):</b><br/>
+_NOTE: The same source should compile on Windows without problems, only generator will be different_<br/><br/>
 If you are in directory IAT_patcher, go up:
 <pre>
 cd ../
