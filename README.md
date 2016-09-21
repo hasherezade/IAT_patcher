@@ -1,7 +1,6 @@
 IAT patcher 
 ==========
 Persistent IAT hooking application.<br/>
-<b>
 
 Please report any bugs and remarks to: hasherezade@op.pl<br/>
 
