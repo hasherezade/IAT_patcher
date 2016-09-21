@@ -2,7 +2,7 @@ IAT patcher
 ==========
 Persistent IAT hooking application.<br/>
 
-Please report any bugs and remarks to: hasherezade@op.pl<br/>
+Please report any bugs and remarks to: hasherezade@gmail.com<br/>
 
 Requires:
 + bearparser: https://github.com/hasherezade/bearparser<br/>
