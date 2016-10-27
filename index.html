@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="IAT Patcher : Persistent IAT hooking application - based on bearparser.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>IAT Patcher</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/hasherezade/IAT_patcher">View on GitHub</a>
+
+          <h1 id="project_title">IAT Patcher</h1>
+          <h2 id="project_tagline">Persistent IAT hooking application - based on bearparser.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/hasherezade/IAT_patcher/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/hasherezade/IAT_patcher/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="iat-patcher-" class="anchor" href="#iat-patcher-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IAT patcher </h1>
+
+<p>Persistent IAT hooking application.<br></p>
+
+<p>Please report any bugs and remarks to: <a href="mailto:hasherezade@gmail.com">hasherezade@gmail.com</a><br></p>
+
+<p>Requires:</p>
+
+<ul>
+<li>bearparser: <a href="https://github.com/hasherezade/bearparser">https://github.com/hasherezade/bearparser</a><br>
+</li>
+<li>Qt SDK (qt-sdk)<br>
+</li>
+<li>Qt4 Core (libqt4-core)<br>
+</li>
+<li>Qt4 GUI (libqt4-gui)<br>
+</li>
+<li>cmake <a href="http://www.cmake.org/">http://www.cmake.org/</a><br>
+</li>
+</ul>
+
+<h2>
+<a id="autobuild" class="anchor" href="#autobuild" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Autobuild:</h2>
+
+<p>To download complete source and compile IAT Patcher you can use this script (for Linux):<br>
+<a href="https://gist.github.com/hasherezade/c1df1cabc99e7963ec77">https://gist.github.com/hasherezade/c1df1cabc99e7963ec77</a><br>
+Just run it and it will do everything for you!
+<br></p>
+
+<h2>
+<a id="manual-build" class="anchor" href="#manual-build" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Manual build:</h2>
+
+<p>To have more control on the process of building, you can also build IAT Patcher manualy, by following several simple steps:<br>
+<b>1) Fetch sources:</b><br></p>
+
+<pre>
+git clone https://github.com/hasherezade/IAT_patcher.git
+cd IAT_patcher
+git clone https://github.com/hasherezade/bearparser.git
+</pre>
+
+<p><b>2) Build (Linux example):</b><br>
+<em>NOTE: The same source should compile on Windows without problems, only generator (cmake -G ...) will be different</em><br><br>
+If you are in directory IAT_patcher, go up:</p>
+
+<pre>
+cd ../
+</pre>
+
+<p>and then:</p>
+
+<pre>
+mkdir build
+cd build
+cmake -G [enviroment of your choice] ../IAT_patcher/
+i. e
+cmake -G "CodeBlocks - Unix Makefiles" ../IAT_patcher/
+make
+</pre>
+
+<p>...the application is here:</p>
+
+<pre>
+../build/patcher/IAT_Patcher
+</pre>
+
+<p>See how to build:
+<a href="https://asciinema.org/a/aakifgbiomqqnl0q08fzy3a62">https://asciinema.org/a/aakifgbiomqqnl0q08fzy3a62</a></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">IAT Patcher maintained by <a href="https://github.com/hasherezade">hasherezade</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
