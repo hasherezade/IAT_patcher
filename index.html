@@ -34,9 +34,11 @@
         <h1>
 <a id="iat-patcher-" class="anchor" href="#iat-patcher-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IAT patcher </h1>
 
-<p>Persistent IAT hooking application.<br></p>
-
-<p>Please report any bugs and remarks to: <a href="mailto:hasherezade@gmail.com">hasherezade@gmail.com</a><br></p>
+<p><b>IAT Patcher</b> is an IAT hooking application. Targets PE 32 and 64 bit.<br>
+It allows you to persistently replace any function that is called via IAT by the function from your own library - the only requirements is that both functions must have matching headers (the same number/type of parameters, calling style etc).<br/></p>
+<p>
+This application can be built for multiple platforms (tested on Windows and Linux 32 and 64 bit).
+</p>
 
 <p>Requires:</p>
 
@@ -53,56 +55,53 @@
 </li>
 </ul>
 
+<p>Please report any bugs and remarks to: <a href="mailto:hasherezade@gmail.com">hasherezade@gmail.com</a><br></p>
+<!-- how to build -->
 <h2>
 <a id="autobuild" class="anchor" href="#autobuild" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Autobuild:</h2>
 
-<p>To download complete source and compile IAT Patcher you can use this script (for Linux):<br>
+<p>To download complete source and compile IAT Patcher on Linux you can use this script:<br>
 <a href="https://gist.github.com/hasherezade/c1df1cabc99e7963ec77">https://gist.github.com/hasherezade/c1df1cabc99e7963ec77</a><br>
 Just run it and it will do everything for you!
-<br></p>
-
-<h2>
-<a id="manual-build" class="anchor" href="#manual-build" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Manual build:</h2>
-
-<p>To have more control on the process of building, you can also build IAT Patcher manualy, by following several simple steps:<br>
-<b>1) Fetch sources:</b><br></p>
-
-<pre>
-git clone https://github.com/hasherezade/IAT_patcher.git
-cd IAT_patcher
-git clone https://github.com/hasherezade/bearparser.git
-</pre>
-
-<p><b>2) Build (Linux example):</b><br>
-<em>NOTE: The same source should compile on Windows without problems, only generator (cmake -G ...) will be different</em><br><br>
-If you are in directory IAT_patcher, go up:</p>
-
-<pre>
-cd ../
-</pre>
-
-<p>and then:</p>
-
-<pre>
-mkdir build
-cd build
-cmake -G [enviroment of your choice] ../IAT_patcher/
-i. e
-cmake -G "CodeBlocks - Unix Makefiles" ../IAT_patcher/
-make
-</pre>
-
-<p>...the application is here:</p>
-
-<pre>
-../build/patcher/IAT_Patcher
-</pre>
-
 <p>See how to build:
 <a href="https://asciinema.org/a/aakifgbiomqqnl0q08fzy3a62">https://asciinema.org/a/aakifgbiomqqnl0q08fzy3a62</a></p>
+
+<!-- how it works -->
+<h2>
+<a id="howto" class="howto" href="#howto" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How it works:</h2>
+<p>
+1. Choose what function(s) you want to replace. Find it in the <i>Import Table<i> of your target application. If you load your target to <b>IAT Patcher</b>, it show you the complete list of the functions that can be replaced.<br/><p>
+<img src="images/1.png"></img></p>
+<p>You can filter the functions and libraries by keywords, i.e.<br/></p>
+<img src="images/filter.png"></img><br/>
+In the given example, let's assume that we want to replace WinHttpConnect.<br/>
+</p>
+<p>
+2. Create your own DLL that will export the replacement function.<br/>
+The header of the replacement function must be exaclty the same like of the function that we want to replace, that's why we must find it and copy. You can check details i.e. on MSN. Example: <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa384091(v=vs.85).aspx">WinHttpConnect</a></p>
+<p>
+Sample replacement DLLs are available in my repository:<br/>
+<a href="https://github.com/hasherezade/IAT_patcher_samples">https://github.com/hasherezade/IAT_patcher_samples</a><br>
+</p>
+<p>
+3. Build the replacement DLL for appropriate architecture.
+</p>
+<p>
+4. Once you have the DLL ready, you can proceed with hooking the target application. First, define the replacement:<br/>
+<p><img src="images/define.png"></img></p>
+Add your library and choose the appropriate function:<br/>
+<p><img src="images/replacement.png"></img></p>
+You will see the application hilighted - it means you defined the replacement, but didn't committed the changes to the target application yet.<br/>
+<img src="images/defined.png"></img><br/>
+</p>
+<p>
+5. Click "Hook!" in order to add the replacement to your target application.<br/>
+<p>
+<img src="images/clicked_hook.png"></img><br/></p>
+If everything went fine, you can save your application and run it. Now the replacement function will be executed instead of the original one.
+</p>
       </section>
     </div>
-
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
@@ -110,8 +109,5 @@ make
         <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-
-    
-
   </body>
 </html>
