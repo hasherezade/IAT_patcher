@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     makeCustomMenu();
     makeFunctionsMenu();
     makeFileMenu();
+    this->setWindowTitle("IAT Patcher v " + QString(VERSION));
 
     this->infoModel = new InfoTableModel(m_ui.outputTable);
     infoModel->setExecutables(&m_exes);
