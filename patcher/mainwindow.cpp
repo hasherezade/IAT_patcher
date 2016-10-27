@@ -8,8 +8,6 @@
 #include "ImportsTableModel.h"
 #include "StubMaker.h"
 
-QString  SITE_LINK = "http://hasherezade.net/IAT_patcher";
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), m_replacementsDialog(NULL),
     infoModel(NULL), m_libsModel(NULL), m_functModel(NULL),
@@ -39,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     urlLabel.setTextFormat(Qt::RichText);
     urlLabel.setTextInteractionFlags(Qt::TextBrowserInteraction);
     urlLabel.setOpenExternalLinks(true);
-    urlLabel.setText("<a href=\""+ SITE_LINK +"\">"+SITE_LINK+"</a>");
+    urlLabel.setText("<a href=\""+ QString(SITE_LINK) +"\">"+SITE_LINK+"</a>");
 
     this->setAcceptDrops(true);
 
@@ -154,7 +152,6 @@ void MainWindow::closeEvent ( QCloseEvent * event )
     for (int i = 0; i < loadedCount; i++) {
         ExeHandler *hndl = this->m_exes.at(i);
         if (hndl->getModifiedState() || hndl->getUnappliedState()) {
-            //printf("Modified: %s\n", hndl->getFileName().toStdString().c_str());
             hasModified = true;
             break;
         }
@@ -452,7 +449,7 @@ void MainWindow::info()
     urlLabel.setOpenExternalLinks(true);
     msgBox.setWindowTitle("Info");
 
-    urlLabel.setText("<a href=\"" + SITE_LINK + "\">More...</a>");
+    urlLabel.setText("<a href=\"" + QString(SITE_LINK) + "\">More...</a>");
 
     msgBox.layout()->addWidget(&urlLabel);
 

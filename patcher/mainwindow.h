@@ -14,6 +14,8 @@
 #include "ExeController.h"
 #include "ReplacementsDialog.h"
 
+#define SITE_LINK "https://hshrzd.wordpress.com"
+
 class ThreadCounter : public QObject
 {
     Q_OBJECT
