@@ -77,7 +77,7 @@ void ReplacementsDialog::openLibrary()
         this,
         tr("Open executable"),
         QDir::homePath(),
-        "DLL Files (*.dll);;All files (*.*)"
+        "DLL Files (*.dll);;All files (*)"
         );
 
     if (fileName != "") {

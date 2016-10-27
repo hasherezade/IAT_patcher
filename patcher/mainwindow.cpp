@@ -182,7 +182,7 @@ void MainWindow::openExe()
         this,
         tr("Open executable"),
         QDir::homePath(),
-        "Exe Files (*.exe);;DLL Files (*.dll);;All files (*.*)"
+        "Exe Files (*.exe);;DLL Files (*.dll);;All files (*)"
         );
 
     if (fileName != "") {
