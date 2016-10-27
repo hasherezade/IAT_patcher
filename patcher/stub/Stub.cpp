@@ -54,7 +54,7 @@ bool Stub::fillParam(size_t id, AbstractByteBuffer* buf)
 {
     StubParam *param = this->getParam(id);
     if (param == NULL) {
-        printf("Param: %d not found!\n", id);
+        //Param not found
         return false;
     }
     if (param->m_relativeToId != param->m_id) {
@@ -101,7 +101,7 @@ bool Stub::readParam(size_t id, AbstractByteBuffer* buf)
 {
     StubParam *param = this->getParam(id);
     if (param == NULL) {
-        printf("Param: %d not found!\n", id);
+        //Param not found
         return false;
     }
     if (param->readFromBuffer(buf) == false) return false;

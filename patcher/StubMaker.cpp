@@ -10,7 +10,6 @@ size_t StubMaker::countMissingImports(ImportsLookup &funcMap)
     QString libName = "Kernel32.dll";
     QStringList funcNames = (QStringList() << "LoadLibraryA" << "GetProcAddress"); // << "VirtualProtect"
 
-    //offset_t getProc = funcMap.findThunk("Kernel32.dll","GetProcAddress");
     size_t count = 0;
     for ( size_t i = 0; i < funcNames.size(); i++) {
         offset_t thunk = funcMap.findThunk(libName, funcNames[i]);
@@ -58,9 +57,9 @@ bool StubMaker::fillHookedInfo(ExeHandler *exeHndl)
             offset_t dataRva =exeHndl->dataStoreRva;
             offset_t dataRaw = pe->toRaw(dataRva, Executable::RVA);
             BufferView dataBuf(pe, dataRaw, pe->getContentSize() - dataRaw);
-            printf("Reading dataStore at = %llx -> %llx\n", dataRva, dataRaw);
+            //printf("Reading dataStore at = %llx -> %llx\n", dataRva, dataRaw);
             readDataStore(&dataBuf, dataRva, exeHndl->m_Repl);
-            printf("Params OK, OEP = %llx\n", exeHndl->originalEP);
+            //printf("Params OK, OEP = %llx\n", exeHndl->originalEP);
         }
     }
     delete stub;
@@ -151,7 +150,7 @@ ByteBuffer* StubMaker::makeDataStore(const offset_t dataRva, FuncReplacements &f
         QString libName;
         QString funcName;
         if (FuncUtil::parseFuncDesc(library, libName, funcName) == false) {
-            printf("Invalid library format!\n");
+            //printf("Invalid library format!\n");
             continue;
         }
 
@@ -172,8 +171,6 @@ ByteBuffer* StubMaker::makeDataStore(const offset_t dataRva, FuncReplacements &f
 
         //add space:
         fAddress[addrIndx++] = 0;
-        //memset(buffer + addrIndex, 0, sizeof(DWORD));
-        //addrIndex += sizeof(DWORD);
     }
     ByteBuffer *dataBuf = new ByteBuffer((BYTE*) buffer, TOTAL_SPACE, 0);
     delete []buffer;
@@ -233,8 +230,7 @@ bool StubMaker::overwriteDataStore(ExeHandler *exeHndl)
 
     if (requiredSize > currentSize) {
         bufsize_t dif = requiredSize - currentSize;
-        //TODO: perform resising...
-        printf("Needs resising, dif = %lx\n", dif);
+        //perform resising...
         if (!pe->extendLastSection(dif + SEC_PADDING)) return false;
     }
 
@@ -308,7 +304,7 @@ bool StubMaker::addMissingFunctions(PEFile *pe, ImportsLookup &funcMap, bool try
 
     ImportEntryWrapper* libWr = addLibrary(pe, library, storageOffset);
     if (libWr == NULL) {
-        printf("Adding library failed!\n");
+        //printf("Adding library failed!\n");
         return false;
     }
     ImportDirWrapper* imports = dynamic_cast<ImportDirWrapper*> (pe->getWrapper(PEFile::WR_DIR_ENTRY + pe::DIR_IMPORT));
@@ -339,11 +335,10 @@ bool StubMaker::addMissingFunctions(PEFile *pe, ImportsLookup &funcMap, bool try
     for ( size_t i = 0; i < fNum; i++) {
 
         if (tryReuse && funcMap.findThunk(library, fNames[i]) != INVALID_ADDR) {
-            printf("Function exist, no need to add...\n");
+            //Function exist, no need to add...
             continue;
         }
         if (addFunction(pe, libWr, prevLast, fNames[i], storageOffset) == false) {
-            printf("Cannot add: %d\n", i);
             isOk = false;
             break;
         }
@@ -401,13 +396,13 @@ bool StubMaker::makeStub(PEFile *pe, ImportsLookup &funcMap, FuncReplacements &f
         Stub* stb = StubMaker::makeStub(pe);
 
         size_t stubSize = stb->getSize();
-        //size_t stubSize = (pe->isBit32()) ? Stub32Data::size : Stub64Data::m_Size;
         bufsize_t stubSectionSize = StubMaker::calcDataStoreSize(funcRepl) + stubSize + TABLE_PADDING;
 
         bool mustRewriteImports = false;
         size_t missingCount = StubMaker::countMissingImports(funcMap);
+
+        //Check if adding imports is required
         if ( missingCount != 0 || (settings.reuseImports == false)) {
-            printf("Must add imports!\n");
             //TODO: try to add to existing lib...
             //TODO: if failed: try to add to existing Import Table...
             //if failed: include import dir in the new section size...
@@ -419,7 +414,6 @@ bool StubMaker::makeStub(PEFile *pe, ImportsLookup &funcMap, FuncReplacements &f
 
         SectionHdrWrapper *stubHdr = NULL;
         if (settings.getAddNewSection() && pe->canAddNewSection()) {
-            printf("Adding new section...\n");
             stubHdr = pe->addNewSection("stub", stubSectionSize);
             if (!stubHdr) {
                 printf("Failed adding section...\n");
@@ -456,12 +450,12 @@ bool StubMaker::makeStub(PEFile *pe, ImportsLookup &funcMap, FuncReplacements &f
             return false;
         }
         size_t stubSecId = sec->getEntriesCount() - 1;
-        printf("Last section: %d\n", stubSecId);
+        //printf("Last section: %d\n", stubSecId);
 
         const offset_t SEC_RVA = stubHdr->getContentOffset(Executable::RVA);
-        printf("Last sectiont RVA = %llx\n", SEC_RVA );
+        //printf("Last sectiont RVA = %llx\n", SEC_RVA );
         const offset_t START_RVA  = SEC_RVA + startOffset;
-        printf("Start writing at : %llx\n", START_RVA );
+        //printf("Start writing at : %llx\n", START_RVA );
 
         if (mustRewriteImports) {
             bool added = false;
@@ -508,11 +502,7 @@ bool StubMaker::makeStub(PEFile *pe, ImportsLookup &funcMap, FuncReplacements &f
         bool hasAdded = false;
 
         if (stubSecView->pasteBuffer(stubOffset, loaderStub, false)) {
-            printf("prev EP = %llX\n", pe->getEntryPoint());
             pe->setEntryPoint(newEntryPoint, Executable::RVA);
-
-            //printf("START_RVA + stubOffset = %llX +  %llX = %llX\n", START_RVA , stubOffset, START_RVA + stubOffset);
-            printf("pasted stub, setting new EP = %llX\n", pe->getEntryPoint());
             hasAdded = true;
         } else {
             printf("pasting buffer failed!\n");

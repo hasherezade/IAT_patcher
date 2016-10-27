@@ -22,9 +22,6 @@ bool ExeHandlerLoader::parse(QString &fileName)
             isLoaded = true;
         }
 
-        //StubMaker::fillHookedInfo(exeHndl);
-        //m_exes.addExe(exeHndl);
-        
     } catch (CustomException &e) { }
 
     emit loaded(exeHndl);

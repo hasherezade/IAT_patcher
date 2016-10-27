@@ -10,7 +10,7 @@ class FileLoader : public QThread
     Q_OBJECT
 public:
     FileLoader(QString fileName) :  m_Buffer(NULL), m_Status(false) { m_FileName = fileName; }
-    virtual ~FileLoader() { printf("~FileLoader: %s\n", m_FileName.toStdString().c_str());}
+    virtual ~FileLoader() { }
 
 signals:
     void loaded(AbstractByteBuffer *buffer);
