@@ -70,7 +70,7 @@ public:
     offset_t getParamValue(size_t id)
     {
         if (this->m_params.find(id) == m_params.end()) {
-            //No param with givern ID
+            //No param with given ID
             return INVALID_ADDR;
         }
         return this->m_params[id]->getValue();
@@ -78,7 +78,7 @@ public:
 
     bool setParam(size_t id, offset_t value) {
         if (this->m_params.find(id) == m_params.end()) {
-            //No param with givern ID
+            //No param with given ID
             return false;
         }
         this->m_params[id]->setValue(value);
