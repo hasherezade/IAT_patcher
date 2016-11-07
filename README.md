@@ -14,8 +14,8 @@ Requires:
 
 Autobuild:
 -
-To download complete source and compile IAT Patcher you can use this script (for Linux):<br/>
-https://gist.github.com/hasherezade/c1df1cabc99e7963ec77<br/>
+To build it on Linux or MacOS you can use the given script - it automatically downloads this repository and all the dependencies:<br/>
+https://github.com/hasherezade/IAT_patcher/blob/master/iatp_autobuild.sh<br/>
 Just run it and it will do everything for you!
 <br/>
 Manual build:
