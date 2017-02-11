@@ -10,11 +10,21 @@ class FunctionsModel : public QAbstractTableModel
 	Q_OBJECT
 
 public slots:
-    void modelChanged() { reset(); }
+    void modelChanged()
+    {
+        //>
+        this->beginResetModel();
+        this->endResetModel();
+        //<
+    }
+
     void on_currentndexChanged(int index)
     {
-         m_libIndex = index;
-         reset();
+        //>
+        this->beginResetModel();
+        m_libIndex = index;
+        this->endResetModel();
+        //<
     }
 
 public:
@@ -49,18 +59,29 @@ public:
 public slots:
     void setLibraries(LibInfos* exes)
     {
+        //>
+        this->beginResetModel();
         if (this->m_LibInfos != NULL) {
             //disconnect old
             QObject::disconnect(this->m_LibInfos, SIGNAL(listChanged()), this, SLOT( on_listChanged() ) );
         }
         this->m_LibInfos = exes;
-        reset();
+
         if (this->m_LibInfos != NULL) {
             QObject::connect(this->m_LibInfos, SIGNAL(listChanged()), this, SLOT( on_listChanged() ) );
         }
+        this->endResetModel();
+        //<
     }
+
 protected slots:
-    void on_listChanged() { reset(); }
+    void on_listChanged()
+    {
+        //>
+        this->beginResetModel();
+        this->endResetModel();
+        //<
+    }
 
 protected:
     int countElements() const;

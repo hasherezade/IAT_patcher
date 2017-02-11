@@ -26,8 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_ui.outputTable->setModel(infoModel);
     m_ui.outputTable->setSortingEnabled(false);
-    m_ui.outputTable->horizontalHeader()->setStretchLastSection(false);
-    m_ui.outputTable->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
+    m_ui.outputTable->horizontalHeader()->setStretchLastSection(true);
+//    m_ui.outputTable->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
     m_ui.outputTable->verticalHeader()->show();
 
     m_ui.outputTable->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ui.importsTable->setSortingEnabled(true);
     m_ui.importsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_ui.importsTable->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_ui.importsTable->horizontalHeader()->setResizeMode(2, QHeaderView::Stretch);
+//    m_ui.importsTable->horizontalHeader()->setResizeMode(2, QHeaderView::Stretch);
 
     connect( m_ui.filterLibEdit, SIGNAL( textChanged (const QString &)), this, SLOT( filterLibs(const QString &)) );
     connect( m_ui.filterProcEdit, SIGNAL( textChanged (const QString &)), this, SLOT( filterFuncs(const QString &)) );
@@ -438,26 +438,29 @@ void MainWindow::info()
     QPixmap p(":/favicon.ico");
     QString msg = "<b>IAT Patcher</b> - tool for persistent IAT hooking<br/>";
     msg += "author: hasherezade<br/><br/>";
+    msg += "using: Qt5<br/><br/>";
     msg += "THIS TOOL IS PROVIDED \"AS IS\" WITHOUT WARRANTIES OF ANY KIND. <br/>\
         Use it at your own risk and responsibility.<br/>\
         Only for research purpose. Do not use it to break the law!";
 
-    QMessageBox msgBox;
-    QLabel urlLabel;
-    urlLabel.setTextFormat(Qt::RichText);
+    QMessageBox *msgBox = new QMessageBox(this);
+    msgBox->setAttribute(Qt::WA_DeleteOnClose);
 
-    urlLabel.setTextInteractionFlags(Qt::TextBrowserInteraction);
-    urlLabel.setOpenExternalLinks(true);
-    msgBox.setWindowTitle("Info");
+    QLabel *urlLabel = new QLabel(msgBox);
+    urlLabel->deleteLater();
+    urlLabel->setTextFormat(Qt::RichText);
 
-    urlLabel.setText("<a href=\"" + QString(SITE_LINK) + "\">More...</a>");
+    urlLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    urlLabel->setOpenExternalLinks(true);
+    msgBox->setWindowTitle("Info");
 
-    msgBox.layout()->addWidget(&urlLabel);
+    urlLabel->setText("<a href=\"" + QString(SITE_LINK) + "\">More...</a>");
+    msgBox->layout()->addWidget(urlLabel);
 
-    msgBox.setText(msg);
-    msgBox.setAutoFillBackground(true);
-    msgBox.setIconPixmap(p);
-    msgBox.setStandardButtons(QMessageBox::Ok);
-    msgBox.setDefaultButton(QMessageBox::Ok);
-    msgBox.exec();
+    msgBox->setText(msg);
+    msgBox->setAutoFillBackground(true);
+    msgBox->setIconPixmap(p);
+
+    msgBox->setStandardButtons(QMessageBox::Ok);
+    msgBox->show();
 }

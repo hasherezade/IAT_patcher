@@ -1,5 +1,4 @@
-#include <qaction.h>
-
+#include <QtWidgets>
 #include "Executables.h"
 #include "StubMaker.h"
 

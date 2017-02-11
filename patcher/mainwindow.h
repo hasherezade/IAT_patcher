@@ -15,7 +15,7 @@
 #include "ReplacementsDialog.h"
 
 #define SITE_LINK "https://hshrzd.wordpress.com"
-#define VERSION "0.3.5.1"
+#define VERSION "0.3.5.1 Qt5"
 
 class ThreadCounter : public QObject
 {

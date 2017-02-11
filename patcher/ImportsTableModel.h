@@ -9,7 +9,11 @@ class ImportsTableModel : public QAbstractTableModel
     Q_OBJECT
 
 public slots:
-    void modelChanged() { reset(); }
+    void modelChanged()
+    { 
+        this->beginResetModel(); 
+        this->endResetModel();
+    }
 
 public:
     enum COLS
@@ -45,6 +49,9 @@ public:
 public slots:
     void setExecutable(ExeHandler* exeHndl)
     {
+        //>
+        this->beginResetModel();
+        
         this->m_FuncMap = NULL;
         this->m_ExeHandler = exeHndl;
 
@@ -52,11 +59,18 @@ public slots:
             this->m_FuncMap = &(m_ExeHandler->m_FuncMap);
 
         }
-        reset();
+        this->endResetModel();
+        //<
     }
 
 protected slots:
-    void onExeChanged() { reset(); }
+    void onExeChanged()
+    {
+        //>
+        this->beginResetModel();
+        this->endResetModel();
+        //<
+    }
 
 protected:
 
