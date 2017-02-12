@@ -114,6 +114,8 @@ private slots:
 private:
     void reloadExe(ExeHandler* exe);
     void removeExe(ExeHandler* exe);
+    void saveRequested(ExeHandler* exeHndl);
+    void hookExecutable(ExeHandler* exeHndl, StubSettings &settings);
     void info();
     void clear();
     bool parse(QString &fileName);

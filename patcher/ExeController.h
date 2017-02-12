@@ -20,12 +20,15 @@ public:
     ExeController(QObject* parent = NULL) {}
     virtual ~ExeController() { }
 
+    bool saveExecutable(ExeHandler* exeHndl, QString newFilename); //throws CustomException
+    bool hookExecutable(ExeHandler* exeHndl, StubSettings &settings); //throws CustomException
+
 signals:
     void exeUpdated(ExeHandler* exeHndl);
 
 public slots:
-    void onHookRequested(ExeHandler* exeHndl, StubSettings &settings);
-    void onSaveRequested(ExeHandler* exeHndl);
+    
+
     //void onUnloadRequested(ExeHandler* exeHndl) {}
 
     void onExportReplacements(ExeHandler* exeHndl);

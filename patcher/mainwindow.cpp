@@ -9,7 +9,7 @@
 #include "StubMaker.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), m_replacementsDialog(NULL),
+    QMainWindow(parent), m_replacementsDialog(NULL), exeController(this),
     infoModel(NULL), m_libsModel(NULL), m_functModel(NULL),
     m_ExeSelected(NULL), customMenu(NULL), functionsMenu(NULL)
 {
@@ -216,6 +216,111 @@ void MainWindow::reloadExe(ExeHandler* exe)
     this->parse(fName);
 }
 
+void MainWindow::saveRequested(ExeHandler* exeHndl)
+{
+    if (exeHndl == NULL) {
+        QMessageBox::warning(this, "Cannot save!", "No executable selected!");
+        return;
+    }
+
+    Executable *exe = exeHndl->getExe();
+    if (exe == NULL) return;
+
+    if (exeHndl->getUnappliedState()) {
+        QMessageBox::warning(this, "Unapplied replacements!",
+            "The file has unapplied replacements. Hook the file to apply them.");
+        return;
+
+    }
+    if (exeHndl->getHookedState() == false) {
+
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Unhooked file!",
+            "You are trying to save unhooked file. Do you really want?",
+            QMessageBox::Yes | QMessageBox::No
+        );
+
+        if (reply == QMessageBox::No) {
+            return;
+        }
+    }
+    QFileInfo inputInfo(exeHndl->getFileName());
+
+    QString infoStr = "Save executable as:";
+    QString fileName = QFileDialog::getSaveFileName(
+        this,
+        infoStr,
+        inputInfo.absoluteDir().path(),
+        "Exe Files (*.exe);;DLL Files (*.dll);;All files (*.*)"
+    );
+    if (fileName.length() == 0) return;
+
+    try {
+        this->exeController.saveExecutable(exeHndl, fileName);
+    }
+    catch (CustomException &e) {
+        QMessageBox::warning(this, "Error!", e.getInfo());
+    }
+}
+
+void MainWindow::hookExecutable(ExeHandler* exeHndl, StubSettings &settings)
+{
+    if (exeHndl == NULL) return;
+
+    Executable *exe = exeHndl->getExe();
+    if (exe == NULL) return;
+
+    bool isHooked = exeHndl->getHookedState();
+    PEFile *pe = dynamic_cast<PEFile*>(exe);
+    if (pe == NULL) {
+        QMessageBox::warning(NULL, "Cannot hook!", "It is not a PE File!");
+        return;
+    }
+    if (isHooked) {
+        if (exeHndl->getUnappliedState() == false) {
+            QMessageBox::information(NULL, "No changes!", "No changes to be applied");
+            return;
+        }
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(NULL, "Already hooked!",
+            "This file is already hooked.\nDo you want to modify the existing stub?",
+            QMessageBox::Yes | QMessageBox::No
+        );
+
+        if (reply == QMessageBox::No) {
+            return;
+        }
+    }
+
+    if (exeHndl->hasReplacements() == false && exeHndl->getHookedState() == false) {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(NULL, "No replacements!",
+            "You haven't defined any replacement functions.\nDo you really want to add an empty stub?",
+            QMessageBox::Yes | QMessageBox::No
+        );
+
+        if (reply == QMessageBox::No) {
+            return;
+        }
+    }
+
+    if (!isHooked && pe->canAddNewSection() == false && settings.getAddNewSection()) {
+        QMessageBox::information(NULL, "Warning", "Cannot add new section in this file!\nProceed by extending last section...");
+    }
+    try {
+        if (this->exeController.hookExecutable(exeHndl, settings)) {
+            QMessageBox::information(NULL, "Done!", "Hooked!\nNow you can save and test the file!");
+            return;
+        }
+        else {
+            QMessageBox::warning(NULL, "Failed", "Cannot hook!");
+        }
+    }
+    catch (CustomException &e) {
+        QMessageBox::warning(NULL, "Error!", e.getInfo());
+    }
+}
+
 void MainWindow::clear()
 {
     selectExe(NULL);
@@ -321,7 +426,7 @@ void MainWindow::updateReplacement(QString libName, QString funcName)
         return;
     }
     if (this->m_ExeSelected->defineReplacement(m_ThunkSelected, substName) == false) {
-        QMessageBox::warning(NULL, "Error", "Invalid replacement definition!");
+        QMessageBox::warning(this, "Error", "Invalid replacement definition!");
         return;
     }
     emit replacementAccepted();
@@ -336,7 +441,7 @@ void MainWindow::takeAction()
         return;
     }
     if (action->data() == ExeController::ACTION_SAVE) {
-        exeController.onSaveRequested(this->m_ExeSelected);
+        this->saveRequested(this->m_ExeSelected);
         return;
     }
     if (action->data() == ExeController::ACTION_UNLOAD) {
@@ -370,18 +475,18 @@ void MainWindow::onHookRequested(ExeHandler* exeHndl)
         settingsStr += "reuse imports";
     }
     this->m_ui.statusBar->showMessage(settingsStr);
-
-    exeController.onHookRequested(exeHndl, settings);
+    
+    this->hookExecutable(exeHndl, settings);
 }
 
 void MainWindow::on_saveButton_clicked()
 {
-    exeController.onSaveRequested(this->m_ExeSelected);
+    saveRequested(this->m_ExeSelected);
 }
 
 void MainWindow::onLoadingFailed(QString fileName)
 {
-    QMessageBox::warning(NULL,"Error!", "Cannot load the file: " + fileName);
+    QMessageBox::warning(this, "Error!", "Cannot load the file: " + fileName);
 }
 
 void MainWindow::onLoaderThreadFinished()
@@ -412,7 +517,7 @@ bool MainWindow::parse(QString &fileName)
         FileView fileView(fileName, maxMapSize);
         ExeFactory::exe_type exeType = ExeFactory::findMatching(&fileView);
         if (exeType == ExeFactory::NONE) {
-            QMessageBox::warning(NULL,"Cannot parse!", "Cannot parse the file: \n"+fileName+"\n\nType not supported.");
+            QMessageBox::warning(this, "Cannot parse!", "Cannot parse the file: \n"+fileName+"\n\nType not supported.");
             return false;
         }
 
