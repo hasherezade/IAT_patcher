@@ -26,8 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_ui.outputTable->setModel(infoModel);
     m_ui.outputTable->setSortingEnabled(false);
-    m_ui.outputTable->horizontalHeader()->setStretchLastSection(true);
-//    m_ui.outputTable->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
+    m_ui.outputTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    m_ui.outputTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     m_ui.outputTable->verticalHeader()->show();
 
     m_ui.outputTable->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ui.importsTable->setSortingEnabled(true);
     m_ui.importsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_ui.importsTable->setSelectionMode(QAbstractItemView::SingleSelection);
-//    m_ui.importsTable->horizontalHeader()->setResizeMode(2, QHeaderView::Stretch);
+    m_ui.importsTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
 
     connect( m_ui.filterLibEdit, SIGNAL( textChanged (const QString &)), this, SLOT( filterLibs(const QString &)) );
     connect( m_ui.filterProcEdit, SIGNAL( textChanged (const QString &)), this, SLOT( filterFuncs(const QString &)) );
@@ -273,7 +273,7 @@ void MainWindow::hookExecutable(ExeHandler* exeHndl, StubSettings &settings)
     bool isHooked = exeHndl->getHookedState();
     PEFile *pe = dynamic_cast<PEFile*>(exe);
     if (pe == NULL) {
-        QMessageBox::warning(NULL, "Cannot hook!", "It is not a PE File!");
+        QMessageBox::warning(this, "Cannot hook!", "It is not a PE File!");
         return;
     }
     if (isHooked) {
@@ -282,7 +282,7 @@ void MainWindow::hookExecutable(ExeHandler* exeHndl, StubSettings &settings)
             return;
         }
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(NULL, "Already hooked!",
+        reply = QMessageBox::question(this, "Already hooked!",
             "This file is already hooked.\nDo you want to modify the existing stub?",
             QMessageBox::Yes | QMessageBox::No
         );
@@ -294,7 +294,7 @@ void MainWindow::hookExecutable(ExeHandler* exeHndl, StubSettings &settings)
 
     if (exeHndl->hasReplacements() == false && exeHndl->getHookedState() == false) {
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(NULL, "No replacements!",
+        reply = QMessageBox::question(this, "No replacements!",
             "You haven't defined any replacement functions.\nDo you really want to add an empty stub?",
             QMessageBox::Yes | QMessageBox::No
         );
@@ -305,19 +305,19 @@ void MainWindow::hookExecutable(ExeHandler* exeHndl, StubSettings &settings)
     }
 
     if (!isHooked && pe->canAddNewSection() == false && settings.getAddNewSection()) {
-        QMessageBox::information(NULL, "Warning", "Cannot add new section in this file!\nProceed by extending last section...");
+        QMessageBox::information(this, "Warning", "Cannot add new section in this file!\nProceed by extending last section...");
     }
     try {
         if (this->exeController.hookExecutable(exeHndl, settings)) {
-            QMessageBox::information(NULL, "Done!", "Hooked!\nNow you can save and test the file!");
+            QMessageBox::information(this, "Done!", "Hooked!\nNow you can save and test the file!");
             return;
         }
         else {
-            QMessageBox::warning(NULL, "Failed", "Cannot hook!");
+            QMessageBox::warning(this, "Failed", "Cannot hook!");
         }
     }
     catch (CustomException &e) {
-        QMessageBox::warning(NULL, "Error!", e.getInfo());
+        QMessageBox::warning(this, "Error!", e.getInfo());
     }
 }
 
@@ -587,7 +587,7 @@ bool MainWindow::parse(QString &fileName)
         loader->start();
 
     } catch (CustomException &e) {
-        QMessageBox::warning(NULL, "ERROR", e.getInfo());
+        QMessageBox::warning(this, "ERROR", e.getInfo());
         return false;
     }
     return true;
@@ -603,26 +603,20 @@ void MainWindow::info()
     msg += "using: Qt5<br/><br/>";
     msg += "THIS TOOL IS PROVIDED \"AS IS\" WITHOUT WARRANTIES OF ANY KIND. <br/>\
         Use it at your own risk and responsibility.<br/>\
-        Only for research purpose. Do not use it to break the law!";
+        Only for research purpose. Do not use it to break the law!<br/><br/>";
+    msg += "<a href='" + QString(SITE_LINK) + "'>Sourcecode & more info</a><br/>";
+    msg += "<a href='" + QString(ISSUES_LINK) + "'>Report issue</a>";
 
     QMessageBox *msgBox = new QMessageBox(this);
     msgBox->setAttribute(Qt::WA_DeleteOnClose);
 
-    QLabel *urlLabel = new QLabel(msgBox);
-    urlLabel->deleteLater();
-    urlLabel->setTextFormat(Qt::RichText);
-
-    urlLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    urlLabel->setOpenExternalLinks(true);
     msgBox->setWindowTitle("Info");
-
-    urlLabel->setText("<a href=\"" + QString(SITE_LINK) + "\">More...</a>");
-    msgBox->layout()->addWidget(urlLabel);
+    msgBox->setTextFormat(Qt::RichText);
 
     msgBox->setText(msg);
     msgBox->setAutoFillBackground(true);
     msgBox->setIconPixmap(p);
 
     msgBox->setStandardButtons(QMessageBox::Ok);
-    msgBox->show();
+    msgBox->exec();
 }

@@ -14,8 +14,9 @@
 #include "ExeController.h"
 #include "ReplacementsDialog.h"
 
-#define SITE_LINK "https://hshrzd.wordpress.com"
-#define VERSION "0.3.5.1 Qt5"
+#define SITE_LINK "http://hasherezade.github.io/IAT_patcher/"
+#define ISSUES_LINK "https://github.com/hasherezade/IAT_patcher/issues"
+#define VERSION "0.3.5.2 Qt5"
 
 class ThreadCounter : public QObject
 {
@@ -113,8 +114,6 @@ private slots:
     void on_saveButton_clicked();
 
     void on_actionAbout_triggered() {  info(); }
-
-
 
 private:
     void reloadExe(ExeHandler* exe);
