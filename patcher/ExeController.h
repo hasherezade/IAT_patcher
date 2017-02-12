@@ -22,15 +22,9 @@ public:
 
     bool saveExecutable(ExeHandler* exeHndl, QString newFilename); //throws CustomException
     bool hookExecutable(ExeHandler* exeHndl, StubSettings &settings); //throws CustomException
+    size_t loadReplacementsFromFile(ExeHandler* exeHndl, QString filename);
+    size_t saveReplacementsToFile(ExeHandler* exeHndl, QString filename);
 
 signals:
     void exeUpdated(ExeHandler* exeHndl);
-
-public slots:
-    
-
-    //void onUnloadRequested(ExeHandler* exeHndl) {}
-
-    void onExportReplacements(ExeHandler* exeHndl);
-    void onImportReplacements(ExeHandler* exeHndl);
 };

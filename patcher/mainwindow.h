@@ -97,6 +97,9 @@ private slots:
     void functionsMenuRequested(QPoint pos);
     void onHookRequested(ExeHandler* exeHndl);
     void updateReplacement(QString libName, QString funcName);
+    void onExportReplacements(ExeHandler* exeHndl);
+    void onImportReplacements(ExeHandler* exeHndl);
+
     void setThunkSelected(offset_t thunk);
 
     void onLoaderThreadFinished();
@@ -110,6 +113,8 @@ private slots:
     void on_saveButton_clicked();
 
     void on_actionAbout_triggered() {  info(); }
+
+
 
 private:
     void reloadExe(ExeHandler* exe);

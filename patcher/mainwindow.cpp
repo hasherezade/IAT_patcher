@@ -432,6 +432,63 @@ void MainWindow::updateReplacement(QString libName, QString funcName)
     emit replacementAccepted();
 }
 
+void MainWindow::onImportReplacements(ExeHandler* exeHndl)
+{
+    if (exeHndl == NULL) return;
+
+    QString infoStr = "Import replacements";
+    QFileInfo inputInfo(exeHndl->getFileName());
+
+    QString fileName = QFileDialog::getOpenFileName(
+        this,
+        infoStr,
+        inputInfo.absoluteDir().path(),
+        "Config file (*.txt);;Config file (*.cfg);;All files (*.*)"
+    );
+    if (fileName.length() == 0) return;
+
+    size_t counter = this->exeController.loadReplacementsFromFile(exeHndl, fileName);
+    if (counter == 0) {
+        QMessageBox::warning(NULL, "Error!", "Cannot import!");
+        return;
+    }
+
+    if (counter > 0) {
+        QString ending = (counter > 1) ? "s" : " ";
+        QMessageBox::information(NULL, "Done!", "Imported: " + QString::number(counter) + " replacement" + ending);
+        
+    }
+}
+
+void MainWindow::onExportReplacements(ExeHandler* exeHndl)
+{
+    if (exeHndl == NULL) return;
+
+    if (exeHndl->hasReplacements() == false) {
+        QMessageBox::warning(NULL, "Cannot save!", "The file have NO replacements defined!");
+        return;
+    }
+    QString infoStr = "Save replacements as...";
+    QFileInfo inputInfo(exeHndl->getFileName());
+
+    QString fileName = QFileDialog::getSaveFileName(
+        this,
+        infoStr,
+        inputInfo.absoluteDir().path(),
+        "Config file (*.txt);;Config file (*.cfg);;All files (*.*)"
+    );
+    if (fileName.length() == 0) return;
+
+    size_t counter = this->exeController.saveReplacementsToFile(exeHndl, fileName);
+    if (counter == 0) {
+        QMessageBox::warning(NULL, "Error!", "Cannot export!");
+    }
+    else {
+        QString ending = (counter > 1) ? "s" : " ";
+        QMessageBox::information(NULL, "Done!", "Exported: " + QString::number(counter) + " replacement" + ending);
+    }
+}
+
 void MainWindow::takeAction()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -453,11 +510,11 @@ void MainWindow::takeAction()
         return;
     }
     if (action->data() == ExeController::ACTION_IMPORT_REPL) {
-        exeController.onImportReplacements(this->m_ExeSelected);
+        this->onImportReplacements(this->m_ExeSelected);
         return;
     }
     if (action->data() == ExeController::ACTION_EXPORT_REPL) {
-        exeController.onExportReplacements(this->m_ExeSelected);
+        this->onExportReplacements(this->m_ExeSelected);
         return;
     }
 }

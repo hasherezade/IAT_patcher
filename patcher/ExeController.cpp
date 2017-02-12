@@ -29,64 +29,28 @@ bool ExeController::hookExecutable(ExeHandler* exeHndl, StubSettings &settings)
     return isSuccess;
 }
 
-void ExeController::onExportReplacements(ExeHandler* exeHndl)
+size_t ExeController::saveReplacementsToFile(ExeHandler* exeHndl, QString fileName)
 {
-    if (exeHndl == NULL) return;
-
-    if (exeHndl->hasReplacements() == false) {
-        QMessageBox::warning(NULL, "Cannot save!", "The file have NO replacements defined!");
-        return;
+    if (fileName.length() == 0) {
+        return 0;
     }
-    QString infoStr ="Save replacements as...";
-    QFileInfo inputInfo(exeHndl->getFileName());
-
-    QString fileName = QFileDialog::getSaveFileName(
-        NULL,
-        infoStr,
-        inputInfo.absoluteDir().path(),
-        "Config file (*.txt);;Config file (*.cfg);;All files (*.*)"
-    );
-    if (fileName.length() == 0) return;
-
     size_t counter = exeHndl->m_Repl.save(fileName);
-    if (counter == 0) {
-        QMessageBox::warning(NULL, "Error!", "Cannot export!");
-    } else {
-        QString ending =  (counter > 1) ? "s":" ";
-        QMessageBox::information(NULL, "Done!", "Exported: " + QString::number(counter) + " replacement" + ending);
-    }
+    return counter;
 }
 
-void ExeController::onImportReplacements(ExeHandler* exeHndl)
+size_t ExeController::loadReplacementsFromFile(ExeHandler* exeHndl, QString fileName)
 {
-    if (exeHndl == NULL) return;
-
-    QString infoStr ="Import replacements";
-    QFileInfo inputInfo(exeHndl->getFileName());
-
-    QString fileName = QFileDialog::getOpenFileName(
-        NULL,
-        infoStr,
-        inputInfo.absoluteDir().path(),
-        "Config file (*.txt);;Config file (*.cfg);;All files (*.*)"
-    );
-    if (fileName.length() == 0) return;
+    if (fileName.length() == 0) return 0;
 
     size_t counter = exeHndl->m_Repl.load(fileName);
     if (counter == 0) {
-        QMessageBox::warning(NULL, "Error!", "Cannot import!");
-        return;
+        return 0;
     }
-    
+
     size_t invalidThunks = exeHndl->m_Repl.dropInvalidThunks(exeHndl->m_FuncMap);
     counter -= invalidThunks;
-    if (invalidThunks > 0) {
-        QMessageBox::warning(NULL, "Warning!", "Found " + QString::number(invalidThunks) + " thunks that are not valid for this executable!");
-        return;
-    } 
-    if (counter > 0) {
-        QString ending =  (counter > 1) ? "s":" ";
-        QMessageBox::information(NULL, "Done!", "Imported: " + QString::number(counter) + " replacement" + ending);
-        if (counter != 0)  exeHndl->setUnappliedState(true);
+    if (counter != 0) {
+        exeHndl->setUnappliedState(true);
     }
+    return counter;
 }
