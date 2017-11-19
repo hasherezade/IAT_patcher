@@ -26,9 +26,6 @@ mkdir IAT_patcher
 cd IAT_patcher
 git clone https://github.com/hasherezade/IAT_patcher.git
 echo "[+] IAT_patcher cloned"
-cd IAT_patcher
-git checkout qt5
-cd ..
 mv IAT_patcher src
 cd src
 git clone https://github.com/hasherezade/bearparser.git
