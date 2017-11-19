@@ -25,11 +25,7 @@ To have more control on the process of building, you can also build IAT Patcher 
 <pre>
 git clone https://github.com/hasherezade/IAT_patcher.git
 cd IAT_patcher
-git checkout qt5
 git clone https://github.com/hasherezade/bearparser.git
-cd bearparser
-git checkout qt5
-cd ../
 </pre>
 
 <b>2) Build (Linux example):</b><br/>
