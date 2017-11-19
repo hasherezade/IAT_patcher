@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include <QApplication>
-#include <QtGui>
+#include <QtWidgets>
 
 #include <iostream>
 #include <stdio.h>

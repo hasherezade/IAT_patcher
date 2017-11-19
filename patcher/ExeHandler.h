@@ -55,6 +55,14 @@ public:
     ImportsLookup m_FuncMap;
     FuncReplacements m_Repl;
 
+public slots:
+    void onFileSaved(QString newName)
+    {
+        this->m_fileName = newName;
+        this->isModified = false; //modifications are saved
+        emit stateChanged();
+    }
+
 protected slots:
     void onChildStateChanged() { emit stateChanged(); }
 
@@ -65,8 +73,6 @@ protected:
     Executable* m_Exe;
 
     QString m_fileName;
-    void setFileName(QString fileName) { this->m_fileName = fileName; emit stateChanged(); }
-
     bool isModified, hasUnapplied;
     //TODO: finish and refactor it
     bool isHooked;

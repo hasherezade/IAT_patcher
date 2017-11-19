@@ -4,9 +4,11 @@ project (IAT_Patcher)
 message (STATUS "parser_dir='${PARSER_DIR}'")
 message (STATUS "parser_lib='${PARSER_LIB}'")
 
-find_package (Qt4 REQUIRED)
+# Find the QtWidgets library
+find_package(Qt5Widgets)
+find_package(Qt5Core)
 
-include_directories (${PARSER_DIR} ${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR} ${QT_QTGUI_INCLUDE_DIR})
+include_directories (${PARSER_DIR})
 
 set (stub_hdrs
     stub/Stub.h
@@ -74,10 +76,10 @@ set (forms
 )
 
 set (rcc application.qrc )
-qt4_add_resources(rcc_src ${rcc})
+qt5_add_resources(rcc_src ${rcc})
 
-QT4_WRAP_UI (forms_hdrs ${forms})
-QT4_WRAP_CPP (hdrs_moc ${hdrs} ${dllparse_hdrs})
+QT5_WRAP_UI (forms_hdrs ${forms})
+QT5_WRAP_CPP (hdrs_moc ${hdrs} ${dllparse_hdrs})
 
 SOURCE_GROUP("Source Files\\Auto Generated" FILES ${hdrs_moc} ${rcc_src} )
 SOURCE_GROUP("Source Files\\stub" FILES ${stub_srcs} )
@@ -85,13 +87,11 @@ SOURCE_GROUP("Header Files\\stub" FILES ${stub_hdrs} )
 SOURCE_GROUP("Source Files\\dllparse" FILES ${dllparse_srcs} )
 SOURCE_GROUP("Header Files\\dllparse" FILES ${dllparse_hdrs} )
 
-INCLUDE(${QT_USE_FILE})
-ADD_DEFINITIONS(${QT_DEFINITIONS})
-
 add_executable (IAT_Patcher IAT_Patcher.rc ${hdrs_moc} ${forms_hdrs} ${stub_srcs} ${stub_hdrs} ${dllparse_hdrs} ${dllparse_srcs} ${hdrs} ${srcs}  ${rcc_src})
-target_link_libraries (IAT_Patcher ${PARSER_LIB} ${QT_QTGUI_LIBRARIES} ${QT_QTCORE_LIBRARIES})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+
+target_link_libraries(IAT_Patcher bearparser Qt5::Core Qt5::Widgets)
 
 # dependencies
 add_dependencies(IAT_Patcher bearparser)

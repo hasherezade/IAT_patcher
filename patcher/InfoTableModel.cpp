@@ -1,8 +1,7 @@
 #include "InfoTableModel.h"
 #include "StubMaker.h"
 
-#include <QFileDialog>
-#include <QMessageBox>
+#include <QtWidgets>
  #include <QIcon>
 
 #define HIGLIHHT_COLOR "yellow"

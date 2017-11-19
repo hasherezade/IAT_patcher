@@ -13,7 +13,13 @@ signals:
     void hookRequested(ExeHandler* exe);
 
 public slots:
-    void modelChanged() { reset(); }
+    void modelChanged()
+    {
+        //>
+        this->beginResetModel();
+        this->endResetModel();
+        //<
+    }
 
 public:
     enum COLS
@@ -51,18 +57,27 @@ public:
 public slots:
     void setExecutables(Executables *exes)
     {
+        //>
+        this->beginResetModel();
         if (this->m_Exes != NULL) {
             //disconnect old
             QObject::disconnect(this->m_Exes, SIGNAL(exeListChanged()), this, SLOT( onExeListChanged() ) );
         }
         this->m_Exes = exes;
-        reset();
         if (this->m_Exes != NULL) {
             QObject::connect(this->m_Exes, SIGNAL(exeListChanged()), this, SLOT( onExeListChanged() ) );
         }
+        this->endResetModel();
+        //<
     }
 protected slots:
-    void onExeListChanged() { reset(); }
+    void onExeListChanged()
+    {
+        //>
+        this->beginResetModel();
+        this->endResetModel();
+        //<
+    }
 
 protected:
     Executables* m_Exes;
