@@ -5,9 +5,9 @@ echo "Trying to autobuild IAT_patcher..."
 QTV="version 4."
 if echo `qmake-qt4 -version` | grep -q "$QTV"; then
     echo "[+] Qt4 found!"
-elseif echo `qmake -v` | grep -q "$QTV"; then
+elif echo `qmake -v` | grep -q "$QTV"; then
     echo "[+] Qt4 found!"
-elseif
+else
     echo "[-] Qt4 NOT found!"
     echo "Install qt-sdk first"
     exit -1
