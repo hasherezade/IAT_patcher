@@ -33,9 +33,7 @@ mv IAT_patcher src
 cd src
 git clone https://github.com/hasherezade/bearparser.git
 echo "[+] bearparser cloned"
-cd bearparser
-git checkout qt5
-cd ../..
+cd ..
 mkdir build
 echo "[+] build directory created"
 cd build
