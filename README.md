@@ -23,6 +23,7 @@ Manual build:
 -
 
 To have more control on the process of building, you can also build IAT Patcher manualy, by following several simple steps:<br/>
+
 <b>1. Fetch sources:</b><br/>
 
 Use recursive clone to get the repo together with the submodule:
