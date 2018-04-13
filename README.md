@@ -1,5 +1,7 @@
 IAT patcher 
 ==========
+[![Build status](https://ci.appveyor.com/api/projects/status/dv42sbge09b3i77h?svg=true)](https://ci.appveyor.com/project/hasherezade/iat-patcher)
+
 Persistent IAT hooking application.<br/>
 Read more: http://hasherezade.github.io/IAT_patcher/<br/>
 
@@ -34,11 +36,7 @@ git clone --recursive https://github.com/hasherezade/IAT_patcher.git
 <b>2. Build (Linux example):</b><br/>
 
 _NOTE: The same source should compile on Windows without problems, only generator (cmake -G ...) will be different_<br/><br/>
-If you are in directory IAT_patcher, go up:
-<pre>
-cd ../
-</pre>
-and then:
+After you clone the repository with sources, create a new directory for the build:
 <pre>
 mkdir build
 cd build
