@@ -21,14 +21,15 @@ Just run it and it will do everything for you!
 <h2>Manual build:</h2></br>
 
 To have more control on the process of building, you can also build IAT Patcher manualy, by following several simple steps:<br/>
-<b>1) Fetch sources:</b><br/>
+1) Fetch sources:
+-
+Use recursive clone to get the repo together with the submodule:
 <pre>
-git clone https://github.com/hasherezade/IAT_patcher.git
-cd IAT_patcher
-git clone https://github.com/hasherezade/bearparser.git
+git clone --recursive https://github.com/hasherezade/IAT_patcher.git
 </pre>
 
-<b>2) Build (Linux example):</b><br/>
+>2) Build (Linux example):
+-
 _NOTE: The same source should compile on Windows without problems, only generator (cmake -G ...) will be different_<br/><br/>
 If you are in directory IAT_patcher, go up:
 <pre>

@@ -24,13 +24,9 @@ fi
 
 mkdir IAT_patcher
 cd IAT_patcher
-git clone https://github.com/hasherezade/IAT_patcher.git
+git clone --recursive https://github.com/hasherezade/IAT_patcher.git
 echo "[+] IAT_patcher cloned"
 mv IAT_patcher src
-cd src
-git clone https://github.com/hasherezade/bearparser.git
-echo "[+] bearparser cloned"
-cd ..
 mkdir build
 echo "[+] build directory created"
 cd build

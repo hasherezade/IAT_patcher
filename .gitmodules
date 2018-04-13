@@ -1,0 +1,3 @@
+[submodule "bearparser"]
+	path = bearparser
+	url = https://github.com/hasherezade/bearparser.git
