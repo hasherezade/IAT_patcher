@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QAbstractTableModel>
-#include <Formatter.h>
+#include <bearparser.h>
 
 #include "LibraryInfo.h"
 

@@ -8,7 +8,7 @@ message (STATUS "parser_lib='${PARSER_LIB}'")
 find_package(Qt5Widgets)
 find_package(Qt5Core)
 
-include_directories (${PARSER_DIR})
+include_directories ( ${PARSER_INC} )
 
 set (stub_hdrs
     stub/Stub.h

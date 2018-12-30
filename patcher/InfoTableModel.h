@@ -3,7 +3,7 @@
 #include <QAbstractTableModel>
 #include "Executables.h"
 
-#include <Formatter.h>
+#include <bearparser.h>
 
 class InfoTableModel : public QAbstractTableModel
 {
