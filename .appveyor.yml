@@ -17,7 +17,7 @@ build:
   verbosity: detailed
 
 configuration:
-  - Debug
+  - Release
   
 environment:
   matrix:
@@ -29,13 +29,25 @@ environment:
 before_build:
   - set PATH=%PATH%;%QT5%\bin;%QT5%\lib\cmake
   - set Qt5Core_DIR=%QT5%
-  
-build_script:
   - mkdir build
   - cd build
   - if [%env_arch%]==[x64] (
-      cmake .. -A x64 )
+    cmake .. -A x64 )
   - if [%env_arch%]==[x86] (
-      cmake .. )
-  - cmake --build .
-  - cd ..
+    cmake .. )
+    
+build_script:
+  - cmake --build . --config %CONFIGURATION%
+  
+after_build:
+  - mkdir %artifactName%
+  - cp -r patcher/%CONFIGURATION%/* %artifactName%
+  - cp %QT5%\bin\Qt5Core.dll %artifactName%
+  - cp %QT5%\bin\Qt5Gui.dll %artifactName%
+  - cp %QT5%\bin\Qt5Widgets.dll %artifactName%
+  - cp -r %QT5%\plugins\platforms\qwindows.dll %artifactName%
+  - cp -r %QT5%\plugins\styles\qwindowsvistastyle.dll %artifactName%  
+  - cp -r %QT5%\plugins\imageformats\qico.dll %artifactName%
+  
+artifacts:
+- path: build\%artifactName%
