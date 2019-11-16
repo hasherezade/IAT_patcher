@@ -20,6 +20,7 @@ configuration:
   - Release
   
 environment:
+  artifactName: $(APPVEYOR_PROJECT_NAME)-$(APPVEYOR_REPO_COMMIT)-$(CONFIGURATION)
   matrix:
     - env_arch: "x64"
       QT5: C:\Qt\5.11\msvc2015_64
