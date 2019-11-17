@@ -87,6 +87,10 @@ SOURCE_GROUP("Header Files\\stub" FILES ${stub_hdrs} )
 SOURCE_GROUP("Source Files\\dllparse" FILES ${dllparse_srcs} )
 SOURCE_GROUP("Header Files\\dllparse" FILES ${dllparse_hdrs} )
 
+IF (WIN32)
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
+ENDIF()
+
 add_executable (IAT_Patcher IAT_Patcher.rc ${hdrs_moc} ${forms_hdrs} ${stub_srcs} ${stub_hdrs} ${dllparse_hdrs} ${dllparse_srcs} ${hdrs} ${srcs}  ${rcc_src})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
@@ -95,5 +99,3 @@ target_link_libraries(IAT_Patcher bearparser Qt5::Core Qt5::Widgets)
 
 # dependencies
 add_dependencies(IAT_Patcher bearparser)
-
-
