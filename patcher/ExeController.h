@@ -1,3 +1,5 @@
+#pragma once
+
 #include <QtWidgets>
 #include "Executables.h"
 #include "StubMaker.h"
@@ -28,3 +30,4 @@ public:
 signals:
     void exeUpdated(ExeHandler* exeHndl);
 };
+

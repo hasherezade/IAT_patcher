@@ -521,7 +521,7 @@ bool StubMaker::makeStub(PEFile *pe, ImportsLookup &funcMap, FuncReplacements &f
 
         return hasAdded;
 
-    } catch (CustomException e) {
+    } catch (CustomException &e) {
         printf ("Not added, because: %s\n", e.what());
     }
 

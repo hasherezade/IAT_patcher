@@ -35,8 +35,8 @@ public:
     QString getFileName() { return fileName; }
     QString getLibName() { return libName; }
     const QString getFuncNameAt(int i) { if (i > functions.size()) return ""; return functions.at(i).name; }
-    const bool isFunctionNamed(int i) { if (i > functions.size()) return false; return !(functions.at(i).isByOrdinal); }
-    const size_t getFunctionsCount() { return functions.size(); }
+    bool isFunctionNamed(int i) const { if (i > functions.size()) return false; return !(functions.at(i).isByOrdinal); }
+    size_t getFunctionsCount() const { return functions.size(); }
 
 protected:
     QString libName;
