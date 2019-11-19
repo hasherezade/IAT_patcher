@@ -2,6 +2,7 @@ IAT patcher
 ==========
 [![Build status](https://ci.appveyor.com/api/projects/status/dv42sbge09b3i77h?svg=true)](https://ci.appveyor.com/project/hasherezade/iat-patcher)
 [![Build status](https://travis-ci.org/hasherezade/IAT_patcher.svg?branch=master)](https://travis-ci.org/hasherezade/IAT_patcher)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/hasherezade/IAT_patcher.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hasherezade/IAT_patcher/alerts/)
 
 Persistent IAT hooking application.<br/>
 Read more: http://hasherezade.github.io/IAT_patcher/<br/>
