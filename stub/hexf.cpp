@@ -15,16 +15,16 @@ int main(int argc, char* argv[])
     int i = 0;
 
     char c = 0;
-    do {
+    while(!feof(fp)) {
         c = fgetc (fp);
-        if (feof(fp)) break;
+        if (c == EOF) break;
         if (i == brk) {
             i = 0;
             printf("\n");
         }
         i++;
         printf("0x%2.2x, ", c & 0x0FF);
-    } while (true);
+    }
     printf("0x90\n");
     return 0;
 }
