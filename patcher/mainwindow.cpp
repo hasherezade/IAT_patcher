@@ -251,7 +251,7 @@ void MainWindow::saveRequested(ExeHandler* exeHndl)
         this,
         infoStr,
         inputInfo.absoluteDir().path(),
-        "Exe Files (*.exe);;DLL Files (*.dll);;All files (*.*)"
+        "Exe Files (*.exe);;DLL Files (*.dll);;All files (*)"
     );
     if (fileName.length() == 0) return;
 
@@ -443,7 +443,7 @@ void MainWindow::onImportReplacements(ExeHandler* exeHndl)
         this,
         infoStr,
         inputInfo.absoluteDir().path(),
-        "Config file (*.txt);;Config file (*.cfg);;All files (*.*)"
+        "Config file (*.txt);;Config file (*.cfg);;All files (*)"
     );
     if (fileName.length() == 0) return;
 
@@ -475,7 +475,7 @@ void MainWindow::onExportReplacements(ExeHandler* exeHndl)
         this,
         infoStr,
         inputInfo.absoluteDir().path(),
-        "Config file (*.txt);;Config file (*.cfg);;All files (*.*)"
+        "Config file (*.txt);;Config file (*.cfg);;All files (*)"
     );
     if (fileName.length() == 0) return;
 
