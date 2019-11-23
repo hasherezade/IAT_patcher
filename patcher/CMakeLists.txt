@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.12)
 project (IAT_Patcher)
 
 message (STATUS "parser_dir='${PARSER_DIR}'")
@@ -99,3 +99,8 @@ target_link_libraries(IAT_Patcher bearparser Qt5::Core Qt5::Widgets)
 
 # dependencies
 add_dependencies(IAT_Patcher bearparser)
+
+#install
+INSTALL( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_BINARY_DIR} COMPONENT ${PROJECT_NAME} )
+
+

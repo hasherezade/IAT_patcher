@@ -24,9 +24,7 @@ echo $CMAKE_VER
 mkdir build
 echo "[+] build directory created"
 cd build
-cmake -G "Unix Makefiles" ../
-make
-cp patcher/IAT_Patcher ./
-pwd
-cd ..
+cmake ..
+cmake --build . --target install
+
 
