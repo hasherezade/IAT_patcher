@@ -21,6 +21,7 @@ before_script:
 script:
   - mkdir build
   - cd build
-  - cmake ..
+  - mkdir $(pwd)/out
+  - cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/out ..
   - cmake --build . --target install
 
