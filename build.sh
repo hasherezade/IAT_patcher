@@ -1,13 +1,19 @@
-echo "Trying to build IAT_patcher..."
+#!/bin/bash
+echo "Trying to autobuild IAT_patcher..."
 
 #QT check
 QT_VER=`qmake -v`
 QTV="version"
 if echo "$QT_VER" | grep -q "$QTV"; then
-    echo "[+] Qt found!"
+    QT_FOUND=`whereis qt5`
+    if echo "$QT_FOUND" | grep -q "lib"; then
+        echo "[+] Qt5 found!"
+    else
+        echo "Install Qt5 SDK first"
+        exit -2
+    fi
 else
-    echo "[-] Qt NOT found!"
-    echo "Install qt-sdk (Qt5) first"
+    echo "Install Qt5 SDK first"
     exit -1
 fi
 
@@ -20,12 +26,11 @@ else
     echo "Install cmake first"
     exit -1
 fi
-echo $CMAKE_VER
+
 mkdir build
 echo "[+] build directory created"
 cd build
 mkdir $(pwd)/out
 cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/out ..
 cmake --build . --target install
-
 
