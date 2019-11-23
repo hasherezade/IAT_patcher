@@ -24,7 +24,8 @@ echo $CMAKE_VER
 mkdir build
 echo "[+] build directory created"
 cd build
-cmake ..
+mkdir $(pwd)/out
+cmake -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/out ..
 cmake --build . --target install
 
 

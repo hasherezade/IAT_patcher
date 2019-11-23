@@ -101,6 +101,6 @@ target_link_libraries(IAT_Patcher bearparser Qt5::Core Qt5::Widgets)
 add_dependencies(IAT_Patcher bearparser)
 
 #install
-INSTALL( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_BINARY_DIR} COMPONENT ${PROJECT_NAME} )
+INSTALL( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX} COMPONENT ${PROJECT_NAME} )
 
 
