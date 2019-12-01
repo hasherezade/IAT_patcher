@@ -2,7 +2,7 @@
 
 #include <QtWidgets>
 #include <QFile>
-#include <bearparser.h>
+#include <bearparser/core.h>
 #include <stdexcept>
 
 #include "FileLoader.h"

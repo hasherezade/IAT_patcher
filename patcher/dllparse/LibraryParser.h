@@ -1,6 +1,6 @@
 #pragma once
 #include <QFile>
-#include <bearparser.h>
+#include <bearparser/core.h>
 
 #include "LibraryInfo.h"
 
