@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include <stdio.h>
-#include <bearparser.h>
 
 int main(int argc, char *argv[])
 {

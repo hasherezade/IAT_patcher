@@ -1,5 +1,5 @@
 #pragma once
-#include <bearparser.h>
+#include <bearparser/core.h>
 
 #include "Executables.h"
 #include "FuncReplacements.h"

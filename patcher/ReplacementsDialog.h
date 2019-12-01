@@ -2,7 +2,7 @@
 
 #include <QtWidgets>
 #include <QFile>
-#include <bearparser.h>
+#include <bearparser/core.h>
 
 #include "Executables.h"
 #include "ui_replacements.h"

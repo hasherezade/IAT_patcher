@@ -1,6 +1,7 @@
 #pragma once
 #include <QFile>
-#include <bearparser.h>
+#include <QMap>
+#include <bearparser/pefile.h>
 
 typedef QMap<QString, offset_t> FuncToThunk;
 
