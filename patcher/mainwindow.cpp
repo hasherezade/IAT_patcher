@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     makeCustomMenu();
     makeFunctionsMenu();
     makeFileMenu();
-    this->setWindowTitle("IAT Patcher v " + QString(VERSION) + " Qt" + QString::number(QT_VERSION_MAJOR, 10));
+    this->setWindowTitle("IAT Patcher v " + QString(VERSION) + " Qt" + QString::number(QT_VER_NUM, 10));
 
     this->infoModel = new InfoTableModel(m_ui.outputTable);
     infoModel->setExecutables(&m_exes);
@@ -600,7 +600,7 @@ void MainWindow::info()
     QPixmap p(":/favicon.ico");
     QString msg = "<b>IAT Patcher</b> - tool for persistent IAT hooking<br/>";
     msg += "author: <a href='" + QString(MY_SITE_LINK) + "'>hasherezade</a><br/>";
-    msg += "using: Qt" + QString::number(QT_VERSION_MAJOR, 10) + "." + QString::number(QT_VERSION_MINOR, 10) + "." + QString::number(QT_VERSION_PATCH, 10) + "<br/><br/>";
+    msg += "using: Qt" + QString::number(QT_VER_NUM, 10) + "<br/><br/>";
 
     msg += "<a href='" + QString(LICENSE_LINK) + "'>LICENSE: " + LICENSE_TYPE + "</a><br/>";
     msg += "<a href='" + QString(SITE_LINK) + "'>Sourcecode & more info</a><br/>";
