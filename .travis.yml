@@ -13,6 +13,7 @@ addons:
     packages:
       - qt5-default
       - qt5-qmake
+      - qt5-qtbase-devel.i686
 
 before_script:
   - cmake --version
