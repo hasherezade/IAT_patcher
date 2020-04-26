@@ -17,38 +17,24 @@ Requires:
 + Qt5 GUI<br/>
 + cmake http://www.cmake.org/<br/>
 
-Autobuild:
+Clone
 -
-
-To build it on Linux or MacOS you can use the given script - it automatically downloads this repository and all the dependencies:<br/>
-[iatp_autobuild.sh](https://raw.githubusercontent.com/hasherezade/IAT_patcher/master/iatp_autobuild.sh)<br/>
-Just run it, and it will automatically download and build everything.
-
-Manual build:
--
-
-To have more control on the process of building, you can also build IAT Patcher manualy, by following several simple steps:<br/>
-
-<b>1. Fetch sources:</b><br/>
-
 Use recursive clone to get the repo together with the submodule:
 <pre>
 git clone --recursive https://github.com/hasherezade/IAT_patcher.git
 </pre>
 
-<b>2. Build (Linux example):</b><br/>
+Download
+-
+You can download the latest build from [releases](https://github.com/hasherezade/IAT_patcher/releases)
 
-_NOTE: The same source should compile on Windows without problems, only generator (cmake -G ...) will be different_<br/><br/>
-After you clone the repository with sources, create a new directory for the build:
-<pre>
-mkdir build
-cd build
-cmake -G [enviroment of your choice] ../IAT_patcher/
-i. e
-cmake -G "CodeBlocks - Unix Makefiles" ../IAT_patcher/
-make
-</pre>
-...the application is here:
-<pre>
-../build/patcher/IAT_Patcher
-</pre>
+Sample DLLs
+-
+Sample DLLs to be used with IAT Patcher can be found in [IAT_patcher_samples](https://github.com/hasherezade/IAT_patcher_samples)
+
+Autobuild
+-
+
+To build it on Linux or MacOS you can use the given script - it automatically downloads this repository and all the dependencies:<br/>
+[iatp_autobuild.sh](https://raw.githubusercontent.com/hasherezade/IAT_patcher/master/iatp_autobuild.sh)<br/>
+Just run it, and it will automatically download and build everything.
