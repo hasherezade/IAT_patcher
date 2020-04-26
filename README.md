@@ -5,7 +5,7 @@ IAT patcher
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e5a1d1892c2642faba08d678c0a6fbf6)](https://www.codacy.com/manual/hasherezade/IAT_patcher?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hasherezade/IAT_patcher&amp;utm_campaign=Badge_Grade)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/hasherezade/IAT_patcher.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hasherezade/IAT_patcher/alerts/)
 
-Persistent IAT hooking application.<br/>
+Persistent IAT hooking application (for PE files).<br/>
 Read more: http://hasherezade.github.io/IAT_patcher/<br/>
 
 Please report any bugs and remarks to: [issues](https://github.com/hasherezade/IAT_patcher/issues).
