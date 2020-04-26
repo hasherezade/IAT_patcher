@@ -21,8 +21,8 @@ Autobuild:
 -
 
 To build it on Linux or MacOS you can use the given script - it automatically downloads this repository and all the dependencies:<br/>
-https://raw.githubusercontent.com/hasherezade/IAT_patcher/master/iatp_autobuild.sh<br/>
-Just run it and it will do everything for you!
+[iatp_autobuild.sh](https://raw.githubusercontent.com/hasherezade/IAT_patcher/master/iatp_autobuild.sh)<br/>
+Just run it, and it will automatically download and build everything.
 
 Manual build:
 -
