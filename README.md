@@ -24,7 +24,14 @@ Use recursive clone to get the repo together with the submodule:
 git clone --recursive https://github.com/hasherezade/IAT_patcher.git
 </pre>
 
-Download
+Autobuild
+-
+
+To build it on Linux or MacOS you can use the given script - it automatically downloads this repository and all the dependencies:<br/>
+[iatp_autobuild.sh](https://raw.githubusercontent.com/hasherezade/IAT_patcher/master/iatp_autobuild.sh)<br/>
+Just run it, and it will automatically download and build everything.
+
+Download builds
 -
 You can download the latest build from [releases](https://github.com/hasherezade/IAT_patcher/releases)
 
@@ -32,9 +39,4 @@ Sample DLLs
 -
 Sample DLLs to be used with IAT Patcher can be found in [IAT_patcher_samples](https://github.com/hasherezade/IAT_patcher_samples)
 
-Autobuild
--
 
-To build it on Linux or MacOS you can use the given script - it automatically downloads this repository and all the dependencies:<br/>
-[iatp_autobuild.sh](https://raw.githubusercontent.com/hasherezade/IAT_patcher/master/iatp_autobuild.sh)<br/>
-Just run it, and it will automatically download and build everything.
