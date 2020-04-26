@@ -354,6 +354,22 @@ Full-Width Styles
   background: url(../images/sprite_download.png) no-repeat top right;
 }
 
+.release_link {
+  display: block;
+  float: right;
+  width: 100px;
+  height:25px;
+  text-indent: -5000px;
+  overflow: hidden;
+  background: url("https://img.shields.io/github/v/release/hasherezade/IAT_patcher.svg") no-repeat top left;
+  box-shadow: none;
+}
+
+.release_link:hover {
+  background: url("https://img.shields.io/github/v/release/hasherezade/IAT_patcher.svg") no-repeat top left;
+}
+
+
 #main_content_wrap {
   background: #f2f2f2;
   border-top: 1px solid #111;
@@ -422,4 +438,16 @@ Small Device Styles
     font-size: 11px;
   }
 
+}
+
+.buildButton {
+	border: none;
+	outline: none;
+	background: none;
+	background-color:none;
+	display:inline-block;
+	align-items: right;
+	padding:6px 6px;
+	margin: 3px;
+	box-shadow: none;
 }
