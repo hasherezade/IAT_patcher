@@ -33,7 +33,7 @@ Just run it, and it will automatically download and build everything.
 
 Download builds
 -
-You can download the latest build from [releases](https://github.com/hasherezade/IAT_patcher/releases)
+You can download the latest stable Windows builds from the [releases](https://github.com/hasherezade/IAT_patcher/releases)
 
 Sample DLLs
 -
