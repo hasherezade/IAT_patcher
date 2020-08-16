@@ -4,7 +4,8 @@ IAT patcher
 [![Build status](https://travis-ci.org/hasherezade/IAT_patcher.svg?branch=master)](https://travis-ci.org/hasherezade/IAT_patcher)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e5a1d1892c2642faba08d678c0a6fbf6)](https://www.codacy.com/manual/hasherezade/IAT_patcher?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hasherezade/IAT_patcher&amp;utm_campaign=Badge_Grade)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/hasherezade/IAT_patcher.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hasherezade/IAT_patcher/alerts/)
-[![Github All Releases](https://img.shields.io/github/downloads/hasherezade/IAT_patcher/total.svg)](http://www.somsubhra.com/github-release-stats/?username=hasherezade&repository=IAT_patcher) 
+[![Github All Releases](https://img.shields.io/github/downloads/hasherezade/IAT_patcher/total.svg)](http://www.somsubhra.com/github-release-stats/?username=hasherezade&repository=IAT_patcher)
+
 Persistent IAT hooking application (for PE files).<br/>
 Read more: http://hasherezade.github.io/IAT_patcher/<br/>
 
