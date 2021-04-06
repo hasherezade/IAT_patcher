@@ -1,6 +1,6 @@
 #pragma once
 #include <QFile>
-#include <bearparser/pefile.h>
+#include <bearparser/pe.h>
 
 class FunctionInfo
 {
