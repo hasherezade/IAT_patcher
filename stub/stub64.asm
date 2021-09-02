@@ -21,9 +21,12 @@ load_lib:
 
 load_next_lib:
 	mov rcx, rax
+	mov r14,rbx
+	mov rbx,[rsp]
 LABEL_LoadLibrary:
 	CALL QWORD NEAR [RIP+0X5A1ED] ; call LoadLibraryA
 	test rax, rax
+	mov rbx,r14
 	jnz load_function
 skip_functions:	; if DLL not found, skip mapped <name><thunk>
 	call get_saved_value
