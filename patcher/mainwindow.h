@@ -19,7 +19,7 @@
 #define QT_VER_NUM QT_VERSION_MAJOR
 #endif
 
-#define VERSION "0.3.5.3"
+#define VERSION "0.3.5.4"
 #define MY_SITE_LINK "https://hasherezade.net/"
 #define LICENSE_TYPE "BSD-2"
 #define LICENSE_LINK "https://raw.githubusercontent.com/hasherezade/IAT_patcher/master/LICENSE"
