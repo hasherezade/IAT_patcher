@@ -6,7 +6,7 @@ bool ExeHandlerLoader::parse(QString &fileName)
     ExeHandler *exeHndl = NULL;
     try {
         const bufsize_t MINBUF = 0x200;
-        AbstractByteBuffer *buf = new FileBuffer(fileName, MINBUF);
+        AbstractByteBuffer *buf = new FileBuffer(fileName, MINBUF, false);
         if (buf == NULL) {
             return false;
         }
